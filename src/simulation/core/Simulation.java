@@ -57,19 +57,19 @@ public class Simulation extends JFrame {
     }
 
     public void run() {
-        this.preyPopulation = this.context.initialPreyPopulation;
-        this.predatorPopulation = this.context.initialPredatorPopulation;
-        this.preyGrowthRate = this.context.initialPreyGrowthRate;
-        this.preyDecayRate = this.context.initialPreyDecayRate;
-        this.predatorGrowthRate = this.context.initialPredatorGrowthRate;
-        this.predatorDecayRate = this.context.initialPredatorDecayRate;
-
-        while(preyPopulation > 0 && predatorPopulation> 0) {
-            this.populate();
-            if (this.callback instanceof Runnable) {
-                this.callback.run();
-            }
-        }
+//        this.preyPopulation = this.context.initialPreyPopulation;
+//        this.predatorPopulation = this.context.initialPredatorPopulation;
+//        this.preyGrowthRate = this.context.initialPreyGrowthRate;
+//        this.preyDecayRate = this.context.initialPreyDecayRate;
+//        this.predatorGrowthRate = this.context.initialPredatorGrowthRate;
+//        this.predatorDecayRate = this.context.initialPredatorDecayRate;
+//
+//        while(preyPopulation > 0 && predatorPopulation> 0) {
+//            this.populate();
+//            if (this.callback instanceof Runnable) {
+//                this.callback.run();
+//            }
+//        }
     }
 
     public void addCallback(Runnable callback) {

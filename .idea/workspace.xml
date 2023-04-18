@@ -5,28 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_beust_jcommander_1_72.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pvr_projekt.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/Layout/Grid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/Layout/Layout.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/Layout/view.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/Board.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/Directions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/Simulation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/SimulationContext.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/Spezies.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/simulation/core/SpeziesContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/simulation/core/SimulationContextJsonFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pvr_projekt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pvr_projekt.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/Simulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/Simulation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/SimulationContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/SimulationContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/Spezies.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/Species.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/SpeziesContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/SpeciesContext.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +30,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -134,6 +128,16 @@
       <updated>1681380850329</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.RuntimeException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

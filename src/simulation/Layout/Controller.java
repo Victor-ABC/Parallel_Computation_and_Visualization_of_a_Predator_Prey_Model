@@ -1,16 +1,13 @@
 package simulation.Layout;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import simulation.core.Board;
 import simulation.core.SimulationContext;
-import simulation.core.SpeziesContext;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
@@ -33,27 +30,16 @@ public class Controller implements Initializable {
     }
 
     public void printGame(SimulationContext context, Board board) {
-        this.centerCanvas.isResizable()
-        this.centerCanvas.setHeight(context.xAches);
-        this.centerCanvas.setWidth(context.yAchses);
+        this.centerCanvas.setHeight(context.height);
+        this.centerCanvas.setWidth(context.width);
         GraphicsContext gc = centerCanvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
-        System.out.println(context.xAches);
-        System.out.println(context.yAchses);
-        for (int row = 0; row < context.xAches; row++) {
-            for (int column = 0; column < context.yAchses; column++) {
-                    gc.getPixelWriter().setColor(column, row, this.getColorForIdentifier(board.getSpeziesAtCell(column, row).context.id));
+        System.out.println(context.height);
+        System.out.println(context.width);
+        for (int row = 0; row < context.width; row++) {
+            for (int column = 0; column < context.height; column++) {
+                    gc.getPixelWriter().setColor(column, row, Color.web(board.getSpeziesAtCell(column, row).context.color));
             }
-        }
-    }
-
-    private Color getColorForIdentifier(int id) {
-        try {
-            return this.colorCache.get(id);
-        } catch (IndexOutOfBoundsException $e) {
-            Color newColor = new Color(this.random.nextFloat(1), this.random.nextFloat(1), this.random.nextFloat(1), 1);
-            this.colorCache.add(newColor);
-            return newColor;
         }
     }
 }

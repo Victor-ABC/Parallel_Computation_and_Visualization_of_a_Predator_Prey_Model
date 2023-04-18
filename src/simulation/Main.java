@@ -12,20 +12,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import simulation.core.SimulationContextJsonFactory;
 
 
 public class Main extends Application {
-    public static void main(String[] args) {
 
+    public static SimulationContext simulationContext;
+
+    public static void main(String[] args) {
+        simulationContext = (new SimulationContextJsonFactory()).CreateSimulationContextFromJsonFile("config.json");
 
         launch();
-
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SimulationContext simulationContext = new SimulationContext();
-
         Simulation simulation = new Simulation(simulationContext);
         Board board = new Board(simulationContext);
 

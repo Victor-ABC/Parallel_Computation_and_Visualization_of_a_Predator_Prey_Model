@@ -1,37 +1,49 @@
 package simulation.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class Board {
 
-    Spezies[][] spezies;
+    Species[][] spezies;
 
     SimulationContext context;
 
     private Random random = new Random();
 
     public Board(SimulationContext simulationContext) {
-        this.spezies = new Spezies[simulationContext.xAches][simulationContext.yAchses];
+        int count = simulationContext.width * simulationContext.height;
+
+        var range = new ArrayList<>(IntStream.rangeClosed(0, count).boxed().toList());
+        Collections.shuffle(range);
+        var filledFields = range.subList(0,  ((int) ((simulationContext.width * simulationContext.height) / 100)) * simulationContext.filledFields);
+
+        this.spezies = new Species[simulationContext.width][simulationContext.height];
         this.context = simulationContext;
 
-        for (int row = 0; row < simulationContext.xAches; row++) {
-            for (int col = 0; col < simulationContext.yAchses; col++) {
-                this.spezies[row][col] = this.getSpezies(context.spezies, col, row);
+        for (int row = 0; row < simulationContext.width; row++) {
+            for (int col = 0; col < simulationContext.height; col++) {
+                if(filledFields.contains(row * col)) {
+                    this.spezies[row][col] = this.getSpezies(context.spezies, col, row);
+                }
             }
         }
     }
 
-    public Spezies getSpezies(SpeziesContext[] speziesContexts, int xAches, int yAches) {
-        int rand = this.random.nextInt(speziesContexts.length);
-        return new Spezies(speziesContexts[rand], xAches, yAches);
+    public Species getSpezies(SpeciesContext[] speciesContexts, int xAches, int yAches) {
+        int rand = this.random.nextInt(speciesContexts.length);
+        return new Species(speciesContexts[rand], xAches, yAches);
     }
 
     public boolean hasSpeziesAtCell(int xAches, int yAches) {
-        return this.spezies[xAches][yAches] instanceof Spezies;
+        return this.spezies[xAches][yAches] instanceof Species;
     }
 
 
-    public Spezies getSpeziesAtCell(int xAches, int yAches) {
+    public Species getSpeziesAtCell(int xAches, int yAches) {
         return this.spezies[xAches][yAches];
     }
 
