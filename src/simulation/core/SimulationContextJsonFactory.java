@@ -23,7 +23,7 @@ public class SimulationContextJsonFactory {
             simulationContext.width = ((Long) json.get("width")).intValue();
             simulationContext.height = ((Long) json.get("height")).intValue();
             simulationContext.maxIterations = ((Long)json.get("max_iterations")).intValue();
-            simulationContext.seed = json.get("seed").toString();
+            simulationContext.seed = (Long) json.get("seed");
 
             var species = (JSONArray) json.get("species");
 

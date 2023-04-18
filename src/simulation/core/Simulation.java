@@ -56,7 +56,7 @@ public class Simulation extends JFrame {
 
     }
 
-    public void run() {
+    public void run(Board boar) {
 //        this.preyPopulation = this.context.initialPreyPopulation;
 //        this.predatorPopulation = this.context.initialPredatorPopulation;
 //        this.preyGrowthRate = this.context.initialPreyGrowthRate;

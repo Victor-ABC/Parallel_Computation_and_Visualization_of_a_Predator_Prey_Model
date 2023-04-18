@@ -43,6 +43,10 @@ public class SpeciesContext {
     }
 
 
+    public boolean isEating(SpeciesContext speciesContext) {
+        return this.getKills().contains(speciesContext);
+    }
+
     public ArrayList<SpeciesContext> getKills() {
         ArrayList<SpeciesContext> killedContexts = new ArrayList<SpeciesContext>();
 

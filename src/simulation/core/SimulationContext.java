@@ -4,7 +4,7 @@ public class SimulationContext {
 
     public int maxIterations = 100;
 
-    public String seed = "42";
+    public long seed = 42;
 
     public int width = 100;
     public int height = 100;

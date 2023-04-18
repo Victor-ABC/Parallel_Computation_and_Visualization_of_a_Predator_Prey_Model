@@ -3,6 +3,8 @@ package simulation.core;
 public class Species {
 
     public SpeciesContext context;
+
+    public int power = 0;
     private int xAches;
     private int yAches;
 
@@ -12,7 +14,15 @@ public class Species {
         this.yAches = yAches;
     }
 
-    public Species breedAtCell(int xAches, int yAches) {
-        return new Species(this.context, xAches, yAches);
+    public boolean shouldMove() {
+        return true;
+    }
+
+    public boolean shouldBreed() {
+        return true;
+    }
+
+    public boolean isLowerThanBreed() {
+        return  true;
     }
 }

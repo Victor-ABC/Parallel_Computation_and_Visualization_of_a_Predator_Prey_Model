@@ -2,9 +2,7 @@ package simulation;
 
 import com.beust.jcommander.JCommander;
 import simulation.Layout.Controller;
-import simulation.core.Board;
-import simulation.core.Simulation;
-import simulation.core.SimulationContext;
+import simulation.core.*;
 
 
 import javafx.application.Application;
@@ -12,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import simulation.core.SimulationContextJsonFactory;
 
 
 public class Main extends Application {
@@ -21,7 +18,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         simulationContext = (new SimulationContextJsonFactory()).CreateSimulationContextFromJsonFile("config.json");
-
+        RandomWrapper.createRandom(simulationContext.seed);
         launch();
     }
 

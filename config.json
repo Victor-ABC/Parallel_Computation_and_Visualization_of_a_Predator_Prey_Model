@@ -1,8 +1,8 @@
 {
-  "width" : 100,
-  "height" : 100,
+  "width" : 200,
+  "height" : 200,
   "max_iterations" : 1000,
-  "seed": "42",
+  "seed": 42,
   "filled_fields": 100,
   "species" : [
     {

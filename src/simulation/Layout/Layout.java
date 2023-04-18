@@ -61,7 +61,7 @@ public class Layout extends JFrame {
     }
 
     private void startSimulation() {
-        simulation.run();
+
     }
 
 
