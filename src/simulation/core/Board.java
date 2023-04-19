@@ -27,7 +27,7 @@ public class Board {
         for (int row = 0; row < simulationConfig.width; row++) {
             for (int col = 0; col < simulationConfig.height; col++) {
                 if (filledFields.contains(row * col)) {
-                    this.speziesBoard[row][col] = this.chooseRandomSpecies(context.spezies, col, row);
+                    this.speziesBoard[row][col] = this.chooseRandomSpecies(context.spezies);
                 }
             }
         }
@@ -141,28 +141,24 @@ public class Board {
                         throw new RuntimeException("Invalid width");
                     }
                     callback.apply(x + 1, y);
-                    return;
                 }
                 case LEFT -> {
                     if ((x - 1) < 0) {
                         throw new RuntimeException("Invalid width");
                     }
                     callback.apply(x - 1, y);
-                    return;
                 }
                 case TOP -> {
                     if ((y - 1) < 0) {
                         throw new RuntimeException("Invalid height");
                     }
                     callback.apply(x, y - 1);
-                    return;
                 }
                 case DOWN -> {
                     if ((y + 1) >= simulationConfig.height) {
                         throw new RuntimeException("Invalid height");
                     }
                     callback.apply(x, y + 1);
-                    return;
                 }
                 default -> throw new IllegalArgumentException();
             }
@@ -170,7 +166,7 @@ public class Board {
         }
     }
 
-    public SpeciesOnField chooseRandomSpecies(SpeciesContext[] speciesContexts, int xAches, int yAches) {
+    public SpeciesOnField chooseRandomSpecies(SpeciesContext[] speciesContexts) {
         int rand = this.random.nextInt(speciesContexts.length);
         return new SpeciesOnField(speciesContexts[rand]);
     }

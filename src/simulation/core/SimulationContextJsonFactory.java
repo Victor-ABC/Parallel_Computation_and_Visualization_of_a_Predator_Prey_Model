@@ -41,7 +41,7 @@ public class SimulationContextJsonFactory {
             simulationConfig.spezies = speciesContexts.toArray(simulationConfig.spezies);
             return simulationConfig;
         } catch (Exception e) {
-            throw new RuntimeException("Json file could not be parsed: " + e.toString());
+            throw new RuntimeException("Json file could not be parsed: " + e);
         }
     }
 
