@@ -1,6 +1,6 @@
-package simulation.core;
+package main.core;
 
-import simulation.core.config.SpeciesContext;
+import main.core.config.SpeciesContext;
 
 public class SpeciesOnField {
 

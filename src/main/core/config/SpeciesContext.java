@@ -1,4 +1,4 @@
-package simulation.core.config;
+package main.core.config;
 
 import java.util.ArrayList;
 import lombok.Data;

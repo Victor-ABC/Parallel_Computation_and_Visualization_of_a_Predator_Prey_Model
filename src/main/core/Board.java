@@ -1,17 +1,17 @@
-package simulation.core;
+package main.core;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import simulation.core.config.SimulationConfig;
-import simulation.core.config.SpeciesContext;
+import main.core.config.SimulationConfig;
+import main.core.config.SpeciesContext;
 
 public class Board {
 
     SpeciesOnField[][] speziesBoard;
 
-    SimulationConfig context;
+    SimulationConfig simulationConfig;
 
     private final Random random = new Random();
 
@@ -20,19 +20,19 @@ public class Board {
 
         ArrayList<Integer> range = new ArrayList<>(IntStream.rangeClosed(0, count).boxed().toList());
         Collections.shuffle(range);
-        List<Integer> filledFields = range.subList(0, ((simulationConfig.width * simulationConfig.height) / 100)
-                * simulationConfig.filledFields);
+        List<Integer> filledFields = range.subList(0, (count / 100) * simulationConfig.filledFields);
 
         this.speziesBoard = new SpeciesOnField[simulationConfig.width][simulationConfig.height];
-        this.context = simulationConfig;
+        this.simulationConfig = simulationConfig;
 
         for (int row = 0; row < simulationConfig.width; row++) {
             for (int col = 0; col < simulationConfig.height; col++) {
                 if (filledFields.contains(row * col)) {
-                    this.speziesBoard[row][col] = this.chooseRandomSpecies(context.species);
+                    this.speziesBoard[row][col] = this.chooseRandomSpecies(simulationConfig.species);
                 }
             }
         }
+
     }
 
     public void run(SimulationConfig simulationConfig, Function<Integer, Boolean> callback) {

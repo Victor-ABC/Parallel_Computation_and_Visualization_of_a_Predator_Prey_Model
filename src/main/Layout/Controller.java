@@ -1,4 +1,4 @@
-package simulation.Layout;
+package main.Layout;
 
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
@@ -7,8 +7,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
-import simulation.core.Board;
-import simulation.core.config.SimulationConfig;
+import main.core.Board;
+import main.core.config.SimulationConfig;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;

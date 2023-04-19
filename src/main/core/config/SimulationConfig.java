@@ -1,4 +1,4 @@
-package simulation.core.config;
+package main.core.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

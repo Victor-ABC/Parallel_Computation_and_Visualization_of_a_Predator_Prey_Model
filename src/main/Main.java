@@ -1,7 +1,9 @@
-package simulation;
+package main;
 
-import simulation.Layout.Controller;
-import simulation.core.*;
+import main.Layout.Controller;
+import main.core.Board;
+import main.core.RandomWrapper;
+import main.core.SimulationContextJsonFactory;
 
 
 import javafx.application.Application;
@@ -9,7 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import simulation.core.config.SimulationConfig;
+import main.core.config.SimulationConfig;
 
 
 public class Main extends Application {

@@ -1,8 +1,8 @@
-package simulation.core;
+package main.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import simulation.core.config.SimulationConfig;
+import main.core.config.SimulationConfig;
 
 public class SimulationContextJsonFactory {
 
