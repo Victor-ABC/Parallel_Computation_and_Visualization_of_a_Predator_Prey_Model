@@ -5,30 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_9_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/BoardTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pvr_projekt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pvr_projekt.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Layout/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/Layout/view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Layout/view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/Direction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Direction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/RandomWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/RandomWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/SimulationContextJsonFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/SimulationContextJsonFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/SpeciesOnField.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/SpeciesOnField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/config/SimulationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/config/SimulationConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/simulation/core/config/SpeciesContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/config/SpeciesContext.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,8 +147,8 @@
       <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.BoardTest" />
       <item itemvalue="JUnit.BoardTest.shouldWork" />
-      <item itemvalue="Maven.Unnamed" />
       <item itemvalue="JUnit.BoardTest.shouldWork_80PercentFullGameField" />
+      <item itemvalue="Maven.Unnamed" />
     </list>
     <recent_temporary>
       <list>
