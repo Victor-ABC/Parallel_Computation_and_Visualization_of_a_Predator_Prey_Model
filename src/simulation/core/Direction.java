@@ -16,10 +16,4 @@ public enum Direction {
     public static Direction randomLetter()  {
         return values.get(RANDOM.nextInt(SIZE));
     }
-
-    public static List<Direction> getRandomDirections() {
-        var list = new ArrayList<>(values);
-        Collections.shuffle(list);
-        return list;
-    }
 }

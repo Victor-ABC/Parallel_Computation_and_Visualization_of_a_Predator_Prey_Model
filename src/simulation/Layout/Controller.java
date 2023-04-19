@@ -8,13 +8,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import simulation.core.Board;
-import simulation.core.SimulationContext;
+import simulation.core.SimulationConfig;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Controller implements Initializable {
 
@@ -26,7 +25,7 @@ public class Controller implements Initializable {
     public HBox centerContent;
 
     public Board board;
-    private SimulationContext context;
+    private SimulationConfig context;
 
     private GraphicsContext gc;
 
@@ -38,7 +37,7 @@ public class Controller implements Initializable {
         yAxis.setLabel("Anzahl");
     }
 
-    public void printGame(SimulationContext context, Board board) {
+    public void printGame(SimulationConfig context, Board board) {
         this.context = context;
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
@@ -52,21 +51,14 @@ public class Controller implements Initializable {
         this.gc = centerCanvas.getGraphicsContext2D();
         this.gc.setFill(Color.WHITE);
         System.out.println(context.height);
-        System.out.println(context.width);
         this.board = board;
         this.createCanvas(context, board, this.gc);
-
     }
 
     public void startOrStop() {
-        System.out.println("Start");
 
-        if(this.isStarted) {
-            return;
-        }
 
         this.isStarted = true;
-
 
         new Thread(() -> {
             this.board.run(this.context, (i) -> {
@@ -77,17 +69,9 @@ public class Controller implements Initializable {
                 return true;
             });
         }).start();
-//
-
-
-
-
-        //this.createCanvas(this.context, this.board, this.gc);
-      // }
-
     }
 
-    private void createCanvas(SimulationContext context, Board board, GraphicsContext gc) {
+    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc) {
         for (int row = 0; row < context.width; row++) {
             for (int column = 0; column < context.height; column++) {
                 gc.getPixelWriter().setColor(column, row, Color.web(this.getColor(column,  row, board)));

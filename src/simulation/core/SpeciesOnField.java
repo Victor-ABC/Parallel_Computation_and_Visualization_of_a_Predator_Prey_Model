@@ -1,6 +1,6 @@
 package simulation.core;
 
-public class Species {
+public class SpeciesOnField {
 
     public SpeciesContext context;
 
@@ -8,7 +8,7 @@ public class Species {
     private int xAches;
     private int yAches;
 
-    public Species(SpeciesContext context, int xAches, int yAches) {
+    public SpeciesOnField(SpeciesContext context, int xAches, int yAches) {
         this.context = context;
         this.xAches = xAches;
         this.yAches = yAches;

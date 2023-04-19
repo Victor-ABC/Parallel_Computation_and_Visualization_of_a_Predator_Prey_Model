@@ -13,20 +13,20 @@ public class SimulationContextJsonFactory {
 
     }
 
-    public SimulationContext CreateSimulationContextFromJsonFile(String path) {
+    public SimulationConfig CreateSimulationContextFromJsonFile(String path) {
         JSONParser parser = new JSONParser();
 
         try {
             JSONObject json = (JSONObject) parser.parse(new FileReader(path));
 
-            SimulationContext simulationContext = new SimulationContext();
-            simulationContext.width = ((Long) json.get("width")).intValue();
-            simulationContext.height = ((Long) json.get("height")).intValue();
-            simulationContext.maxIterations = ((Long)json.get("max_iterations")).intValue();
-            simulationContext.seed = (Long) json.get("seed");
-            simulationContext.probabilityOfReproduction = ((Long) json.get("probability_of_reproduction")).intValue();
-            simulationContext.probabilityOfSelection = ((Long) json.get("probability_of_selection")).intValue();
-            simulationContext.probabilityOfMovement = ((Long) json.get("probability_of_movement")).intValue();
+            SimulationConfig simulationConfig = new SimulationConfig();
+            simulationConfig.width = ((Long) json.get("width")).intValue();
+            simulationConfig.height = ((Long) json.get("height")).intValue();
+            simulationConfig.maxIterations = ((Long)json.get("max_iterations")).intValue();
+            simulationConfig.seed = (Long) json.get("seed");
+            simulationConfig.probabilityOfReproduction = ((Long) json.get("probability_of_reproduction")).intValue();
+            simulationConfig.probabilityOfSelection = ((Long) json.get("probability_of_selection")).intValue();
+            simulationConfig.probabilityOfMovement = ((Long) json.get("probability_of_movement")).intValue();
 
             var species = (JSONArray) json.get("species");
 
@@ -38,8 +38,8 @@ public class SimulationContextJsonFactory {
                 }
             }
 
-            simulationContext.spezies = speciesContexts.toArray(simulationContext.spezies);
-            return simulationContext;
+            simulationConfig.spezies = speciesContexts.toArray(simulationConfig.spezies);
+            return simulationConfig;
         } catch (Exception e) {
             throw new RuntimeException("Json file could not be parsed: " + e.toString());
         }
@@ -49,8 +49,7 @@ public class SimulationContextJsonFactory {
         return new SpeciesContext(
                 species.get("name").toString(),
                 species.get("color").toString(),
-                (String[]) ((JSONArray) species.get("kills")).stream().toArray(String[]::new),
-                (String[]) ((JSONArray) species.get("is_killed_by")).stream().toArray(String[]::new)
+                (String[]) ((JSONArray) species.get("kills")).stream().toArray(String[]::new)
         );
     }
 }

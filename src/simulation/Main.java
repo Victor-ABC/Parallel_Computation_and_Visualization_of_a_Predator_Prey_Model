@@ -1,6 +1,5 @@
 package simulation;
 
-import com.beust.jcommander.JCommander;
 import simulation.Layout.Controller;
 import simulation.core.*;
 
@@ -14,17 +13,17 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static SimulationContext simulationContext;
+    public static SimulationConfig simulationConfig;
 
     public static void main(String[] args) {
-        simulationContext = (new SimulationContextJsonFactory()).CreateSimulationContextFromJsonFile("config.json");
-        RandomWrapper.createRandom(simulationContext.seed);
+        simulationConfig = (new SimulationContextJsonFactory()).CreateSimulationContextFromJsonFile("config.json");
+        RandomWrapper.createRandom(simulationConfig.seed);
         launch();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Board board = new Board(simulationContext);
+        Board board = new Board(simulationConfig);
 
         FXMLLoader  loader   = new FXMLLoader(getClass().getResource("Layout/view.fxml"));
         Parent root = loader.load();
@@ -35,7 +34,7 @@ public class Main extends Application {
         primaryStage.setMinWidth(820);
         primaryStage.setMinHeight(750);
         primaryStage.show();
-        myController.printGame(simulationContext, board);
+        myController.printGame(simulationConfig, board);
     }
 
 }
