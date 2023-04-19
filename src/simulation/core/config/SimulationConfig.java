@@ -1,6 +1,5 @@
 package simulation.core.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
