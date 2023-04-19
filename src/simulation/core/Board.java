@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import simulation.core.config.SimulationConfig;
+import simulation.core.config.SpeciesContext;
 
 public class Board {
 
@@ -27,7 +29,7 @@ public class Board {
         for (int row = 0; row < simulationConfig.width; row++) {
             for (int col = 0; col < simulationConfig.height; col++) {
                 if (filledFields.contains(row * col)) {
-                    this.speziesBoard[row][col] = this.chooseRandomSpecies(context.spezies);
+                    this.speziesBoard[row][col] = this.chooseRandomSpecies(context.species);
                 }
             }
         }

@@ -8,7 +8,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import simulation.core.Board;
-import simulation.core.SimulationConfig;
+import simulation.core.config.SimulationConfig;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;

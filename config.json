@@ -1,12 +1,12 @@
 {
   "width" : 200,
   "height" : 200,
-  "max_iterations" : 10000,
+  "maxIterations" : 10000,
   "seed": 50,
-  "filled_fields": 80,
-  "probability_of_reproduction" : 1,
-  "probability_of_selection" : 1,
-  "probability_of_movement" : 1,
+  "filledFields": 80,
+  "probabilityOfReproduction" : 1,
+  "probabilityOfSelection" : 1,
+  "probabilityOfMovement" : 1,
   "species" : [
     {
       "name": "Affen",

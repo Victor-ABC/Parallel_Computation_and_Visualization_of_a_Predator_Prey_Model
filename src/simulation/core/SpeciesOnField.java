@@ -1,5 +1,7 @@
 package simulation.core;
 
+import simulation.core.config.SpeciesContext;
+
 public class SpeciesOnField {
 
     public SpeciesContext context;
