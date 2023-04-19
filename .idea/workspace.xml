@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pvr_projekt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/pvr_projekt.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/Layout/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/Direction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/Direction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/RandomWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/RandomWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/simulation/core/SimulationContextJsonFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation/core/SimulationContextJsonFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +40,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/java/javafx-sdk-20/lib" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2689655" />
@@ -98,7 +103,7 @@
       <option name="presentableId" value="Default" />
       <updated>1681380850329</updated>
       <workItem from="1681915846302" duration="211000" />
-      <workItem from="1681916069776" duration="212000" />
+      <workItem from="1681916069776" duration="605000" />
     </task>
     <servers />
   </component>

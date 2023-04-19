@@ -8,8 +8,7 @@ public enum Direction {
     DOWN,
     LEFT;
 
-    private static final List<Direction> values =
-            Collections.unmodifiableList(Arrays.asList(values()));
+    private static final List<Direction> values = List.of(values());
     private static final int SIZE = values.size();
     private static final Random RANDOM = new Random();
 

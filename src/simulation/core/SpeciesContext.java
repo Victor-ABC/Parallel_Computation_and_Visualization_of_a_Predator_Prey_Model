@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SpeciesContext {
     public final String color;
-    private ArrayList<String> kills;
+    private final ArrayList<String> kills;
     public final String name;
 
     public SpeciesContext(
@@ -15,7 +15,7 @@ public class SpeciesContext {
     ) {
         this.name = name;
         this.color = color;
-        this.kills = new ArrayList<String>(List.of(kills));
+        this.kills = new ArrayList<>(List.of(kills));
     }
 
     public boolean isEating(SpeciesContext speciesContext) {

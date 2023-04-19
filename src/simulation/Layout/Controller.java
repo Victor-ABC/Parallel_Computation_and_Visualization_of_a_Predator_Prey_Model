@@ -29,8 +29,6 @@ public class Controller implements Initializable {
 
     private GraphicsContext gc;
 
-    private Boolean isStarted = false;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -56,10 +54,6 @@ public class Controller implements Initializable {
     }
 
     public void startOrStop() {
-
-
-        this.isStarted = true;
-
         new Thread(() -> {
             this.board.run(this.context, (i) -> {
                 Platform.runLater(() -> {

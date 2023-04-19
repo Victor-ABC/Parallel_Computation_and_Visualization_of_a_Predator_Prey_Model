@@ -11,14 +11,15 @@ public class Board {
 
     SimulationConfig context;
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public Board(SimulationConfig simulationConfig) {
         int count = simulationConfig.width * simulationConfig.height;
 
         ArrayList<Integer> range = new ArrayList<>(IntStream.rangeClosed(0, count).boxed().toList());
         Collections.shuffle(range);
-        List<Integer> filledFields = range.subList(0, ((int) ((simulationConfig.width * simulationConfig.height) / 100)) * simulationConfig.filledFields);
+        List<Integer> filledFields = range.subList(0, ((simulationConfig.width * simulationConfig.height) / 100)
+                * simulationConfig.filledFields);
 
         this.speziesBoard = new SpeciesOnField[simulationConfig.width][simulationConfig.height];
         this.context = simulationConfig;
@@ -76,7 +77,7 @@ public class Board {
 
             this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
                 if (!this.hasSpeciesAtCell(xOther, yOther)) {
-                    this.speziesBoard[xOther][yOther] = new SpeciesOnField(cellSpeciesOnField.context, xOther, yOther);
+                    this.speziesBoard[xOther][yOther] = new SpeciesOnField(cellSpeciesOnField.context);
                 }
 
                 return true;
@@ -85,7 +86,7 @@ public class Board {
             this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
                 if (this.hasSpeciesAtCell(xOther, yOther)) {
                     SpeciesOnField argumentSpeciesOnField = this.getSpeciesAtCell(xOther, yOther);
-                    this.speziesBoard[x][y] = new SpeciesOnField(argumentSpeciesOnField.context, x, y);
+                    this.speziesBoard[x][y] = new SpeciesOnField(argumentSpeciesOnField.context);
                 }
 
                 return true;
@@ -135,45 +136,43 @@ public class Board {
     private void executeActionAt(int x, int y, SimulationConfig simulationConfig, Direction direction, BiFunction<Integer, Integer, Boolean> callback) {
         try {
             switch (direction) {
-                case RIGHT:
+                case RIGHT -> {
                     if ((x + 1) >= simulationConfig.width) {
                         throw new RuntimeException("Invalid width");
                     }
-
                     callback.apply(x + 1, y);
                     return;
-                case LEFT:
+                }
+                case LEFT -> {
                     if ((x - 1) < 0) {
                         throw new RuntimeException("Invalid width");
                     }
-                    
                     callback.apply(x - 1, y);
                     return;
-                case TOP:
+                }
+                case TOP -> {
                     if ((y - 1) < 0) {
                         throw new RuntimeException("Invalid height");
                     }
-
                     callback.apply(x, y - 1);
                     return;
-                case DOWN:
+                }
+                case DOWN -> {
                     if ((y + 1) >= simulationConfig.height) {
                         throw new RuntimeException("Invalid height");
                     }
-                    
                     callback.apply(x, y + 1);
                     return;
-
-                default:
-                    throw new IllegalArgumentException();
+                }
+                default -> throw new IllegalArgumentException();
             }
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException ignored) {
         }
     }
 
     public SpeciesOnField chooseRandomSpecies(SpeciesContext[] speciesContexts, int xAches, int yAches) {
         int rand = this.random.nextInt(speciesContexts.length);
-        return new SpeciesOnField(speciesContexts[rand], xAches, yAches);
+        return new SpeciesOnField(speciesContexts[rand]);
     }
 
     public boolean hasSpeciesAtCell(int xAches, int yAches) {

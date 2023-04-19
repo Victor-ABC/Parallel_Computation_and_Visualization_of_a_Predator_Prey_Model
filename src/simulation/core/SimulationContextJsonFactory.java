@@ -30,7 +30,7 @@ public class SimulationContextJsonFactory {
 
             var species = (JSONArray) json.get("species");
 
-            ArrayList<SpeciesContext> speciesContexts = new ArrayList<SpeciesContext>();
+            ArrayList<SpeciesContext> speciesContexts = new ArrayList<>();
 
             for (Object specie: species) {
                 if ( specie instanceof JSONObject ) {

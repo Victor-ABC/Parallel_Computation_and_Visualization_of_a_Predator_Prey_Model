@@ -6,7 +6,7 @@ public class RandomWrapper {
     public static Random random = null;
 
     public static void createRandom(long seed) {
-        if(random instanceof Random) {
+        if(random != null) {
             throw new RuntimeException("Already inilized");
         }
 
@@ -14,7 +14,7 @@ public class RandomWrapper {
     }
 
     public static Random getRandom()  {
-        if(!(random instanceof Random)) {
+        if(random == null) {
             throw new RuntimeException("Not inilized");
         }
 
