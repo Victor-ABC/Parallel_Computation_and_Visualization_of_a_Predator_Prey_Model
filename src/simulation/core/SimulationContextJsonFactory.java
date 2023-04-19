@@ -24,6 +24,9 @@ public class SimulationContextJsonFactory {
             simulationContext.height = ((Long) json.get("height")).intValue();
             simulationContext.maxIterations = ((Long)json.get("max_iterations")).intValue();
             simulationContext.seed = (Long) json.get("seed");
+            simulationContext.probabilityOfReproduction = ((Long) json.get("probability_of_reproduction")).intValue();
+            simulationContext.probabilityOfSelection = ((Long) json.get("probability_of_selection")).intValue();
+            simulationContext.probabilityOfMovement = ((Long) json.get("probability_of_movement")).intValue();
 
             var species = (JSONArray) json.get("species");
 
@@ -46,9 +49,6 @@ public class SimulationContextJsonFactory {
         return new SpeciesContext(
                 species.get("name").toString(),
                 species.get("color").toString(),
-                ((Long) species.get("probability_of_reproduction")).intValue(),
-                ((Long) species.get("probability_of_selection")).intValue(),
-                ((Long) species.get("probability_of_movement")).intValue(),
                 (String[]) ((JSONArray) species.get("kills")).stream().toArray(String[]::new),
                 (String[]) ((JSONArray) species.get("is_killed_by")).stream().toArray(String[]::new)
         );

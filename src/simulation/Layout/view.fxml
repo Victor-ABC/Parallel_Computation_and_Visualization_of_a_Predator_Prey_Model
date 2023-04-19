@@ -3,8 +3,6 @@
 
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 
 <?import javafx.scene.layout.VBox?>

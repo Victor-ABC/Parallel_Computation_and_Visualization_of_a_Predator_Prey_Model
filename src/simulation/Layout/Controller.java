@@ -1,5 +1,6 @@
 package simulation.Layout;
 
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.CategoryAxis;
@@ -13,6 +14,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Controller implements Initializable {
 
@@ -22,6 +24,14 @@ public class Controller implements Initializable {
     public Canvas centerCanvas;
 
     public HBox centerContent;
+
+    public Board board;
+    private SimulationContext context;
+
+    private GraphicsContext gc;
+
+    private Boolean isStarted = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -29,6 +39,7 @@ public class Controller implements Initializable {
     }
 
     public void printGame(SimulationContext context, Board board) {
+        this.context = context;
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
         this.centerContent.setOnScroll((ScrollEvent event) -> {
@@ -38,19 +49,45 @@ public class Controller implements Initializable {
         });
         this.centerCanvas.setScaleX(2);
         this.centerCanvas.setScaleY(2);
-        GraphicsContext gc = centerCanvas.getGraphicsContext2D();
-        gc.setFill(Color.WHITE);
+        this.gc = centerCanvas.getGraphicsContext2D();
+        this.gc.setFill(Color.WHITE);
         System.out.println(context.height);
         System.out.println(context.width);
-        this.repaint(context, board, gc);
+        this.board = board;
+        this.createCanvas(context, board, this.gc);
 
     }
 
     public void startOrStop() {
+        System.out.println("Start");
+
+        if(this.isStarted) {
+            return;
+        }
+
+        this.isStarted = true;
+
+
+        new Thread(() -> {
+            this.board.run(this.context, (i) -> {
+                Platform.runLater(() -> {
+                    this.createCanvas(this.context, this.board, this.gc);
+                });
+
+                return true;
+            });
+        }).start();
+//
+
+
+
+
+        //this.createCanvas(this.context, this.board, this.gc);
+      // }
 
     }
 
-    private void repaint(SimulationContext context, Board board, GraphicsContext gc) {
+    private void createCanvas(SimulationContext context, Board board, GraphicsContext gc) {
         for (int row = 0; row < context.width; row++) {
             for (int column = 0; column < context.height; column++) {
                 gc.getPixelWriter().setColor(column, row, Color.web(this.getColor(column,  row, board)));

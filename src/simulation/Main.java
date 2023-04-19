@@ -24,7 +24,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Simulation simulation = new Simulation(simulationContext);
         Board board = new Board(simulationContext);
 
         FXMLLoader  loader   = new FXMLLoader(getClass().getResource("Layout/view.fxml"));

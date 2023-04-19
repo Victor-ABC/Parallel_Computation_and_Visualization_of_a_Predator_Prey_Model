@@ -36,176 +36,149 @@ public class Board {
             }
         }
     }
-//
-//    public boolean canBreed(Species species) {
-//
-//    }
-//
-//    public boolean isStarving(Species species) {
-//
-//    }
-//
-//    public boolean canEar(Species species) {
-//
-//    }
 
-    public void run(SimulationContext simulationContext) {
-        for (var i = 0; i < simulationContext.height * simulationContext.width; i++) {
-            this.iterationPhase(simulationContext);
-        }
-
+    public void run(SimulationContext simulationContext, Function<Integer, Boolean> callback) {
+        for (int i = 0; i < simulationContext.maxIterations; i++) {
+            System.out.println(i);
         for (int row = 0; row < simulationContext.width; row++) {
             for (int col = 0; col < simulationContext.height; col++) {
-                this.developmentPhase(col, row);
+                int nextCol = random.nextInt(simulationContext.width);
+                int nextRow = random.nextInt(simulationContext.height);
+
+                this.action(nextCol, nextRow, simulationContext);
+
             }
         }
-    }
 
-    public void developmentPhase(int x, int y) {
-        if (!hasSpeciesAtCell(x, y)) {
-            return;
-        }
-
-        Species cellSpecies = this.getSpeciesAtCell(x, y);
-
-        if (cellSpecies.isLowerThanBreed()) {
-            cellSpecies.power = +1;
-            return;
-        }
-
-        if (cellSpecies.shouldBreed()) {
-            return;
+            callback.apply(i);
         }
     }
 
-    public void iterationPhase(SimulationContext simulationContext) {
-        int x = RandomWrapper.getRandom().nextInt(simulationContext.width);
-        int y = RandomWrapper.getRandom().nextInt(simulationContext.height);
+    public void action(int x, int y, SimulationContext simulationContext) {
+        int all = simulationContext.probabilityOfReproduction
+                + simulationContext.probabilityOfSelection
+                + simulationContext.probabilityOfMovement;
 
-        if (!hasSpeciesAtCell(x, y)) {
+
+        var randomValue = RandomWrapper.getRandom().nextInt(all);
+
+        randomValue -= simulationContext.probabilityOfReproduction;
+        if (randomValue < 0) {
+            this.reproduction(x, y, simulationContext);
             return;
         }
 
-        Species cellSpecies = this.getSpeciesAtCell(x, y);
+        randomValue -= simulationContext.probabilityOfSelection;
+        if (randomValue < 0) {
+            this.selection(x, y, simulationContext);
+            return;
+        }
 
-        if (cellSpecies.shouldMove()) {
-            this.executeAtEmpty(x, y, simulationContext, cellSpecies, (xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies) -> {
-                this.swapWithDirection(xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies);
+        this.move(x, y, simulationContext);
+    }
+
+    public void reproduction(int x, int y, SimulationContext simulationContext) {
+        Direction choosenDirection = Direction.randomLetter();
+        if (hasSpeciesAtCell(x, y)) {
+            Species cellSpecies = this.getSpeciesAtCell(x, y);
+
+            this.executeActionAt(x, y, simulationContext, choosenDirection, (xArguemnt, yArgument) -> {
+                if (!this.hasSpeciesAtCell(xArguemnt, yArgument)) {
+                    this.spezies[xArguemnt][yArgument] = new Species(cellSpecies.context, xArguemnt, yArgument);
+                }
+
+                return true;
             });
-            return;
         }
 
-        if (cellSpecies.shouldBreed()) {
-            this.executeAtEmpty(x, y, simulationContext, cellSpecies, (xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies) -> {
-                this.breedAtDirection(xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies);
-            });
-            return;
-        }
+        this.executeActionAt(x, y, simulationContext, choosenDirection, (xArguemnt, yArgument) -> {
+            if (this.hasSpeciesAtCell(xArguemnt, yArgument)) {
+                Species argumentSpecies = this.getSpeciesAtCell(xArguemnt, yArgument);
+                this.spezies[x][y] = new Species(argumentSpecies.context, x, y);
+            }
 
-        if (this.tryToEat(x, y, simulationContext, cellSpecies)) {
-            return;
-        }
-        ;
-
-        this.executeAtEmpty(x, y, simulationContext, cellSpecies, (xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies) -> {
-            this.swapWithDirection(xArgument, yArgumentc, simulationContextArgument, direction, argumentCellSpecies);
+            return true;
         });
     }
 
-    private boolean tryToEat(int x, int y, SimulationContext simulationContext, Species cellSpecies) {
-        for (Direction direction : Direction.getRandomDirections()) {
-            boolean isEmpty = !this.hasSpeciesForDirection(x, y, simulationContext, direction);
-            if (isEmpty) {
-                continue;
-            }
-            if (cellSpecies.context.isEating(this.getSpeciesForDirection(x, y, simulationContext, direction).context)) {
-                this.eatDirection(x, y, simulationContext, direction, cellSpecies);
+    public void selection(int x, int y, SimulationContext simulationContext) {
+        Direction choosenDirection = Direction.randomLetter();
+
+        if (!hasSpeciesAtCell(x, y)) {
+            return;
+        }
+        Species cellSpecies = this.getSpeciesAtCell(x, y);
+
+        this.executeActionAt(x, y, simulationContext, choosenDirection, (xArguemnt, yArgument) -> {
+            if (!this.hasSpeciesAtCell(xArguemnt, yArgument)) {
                 return true;
             }
-        }
 
+            Species argumentSpecies = this.getSpeciesAtCell(xArguemnt, yArgument);
 
-        return false;
-    }
-
-    private void executeAtEmpty(int x, int y, SimulationContext simulationContext, Species cellSpecies, FiFunction<Integer, Integer, SimulationContext, Direction, Species> callback) {
-        for (Direction direction : Direction.getRandomDirections()) {
-            boolean isEmpty = !this.hasSpeciesForDirection(x, y, simulationContext, direction);
-            if (isEmpty) {
-                callback.apply(x, y, simulationContext, direction, cellSpecies);
-                return;
+            if (argumentSpecies.context.isEating(cellSpecies.context)) {
+                this.spezies[x][y] = null;
             }
-        }
-    }
 
-    private void swapWithDirection(int x, int y, SimulationContext simulationContext, Direction direction, Species cellSpecies) {
-        this.<Boolean>executeActionAt(x, y, simulationContext, direction, (xArguemnt, yArgument) -> {
-            this.spezies[xArguemnt][yArgument] = cellSpecies;
+            if (cellSpecies.context.isEating(argumentSpecies.context)) {
+                this.spezies[xArguemnt][yArgument] = null;
+            }
+
             return true;
         });
     }
 
-    private void eatDirection(int x, int y, SimulationContext simulationContext, Direction direction, Species cellSpecies) {
-        Species eaten = this.<Species>executeActionAt(x, y, simulationContext, direction, (xArguemnt, yArgument) -> {
-            Species innerEaten = this.spezies[xArguemnt][yArgument];
-            this.spezies[xArguemnt][yArgument] = null;
-            return innerEaten;
-        });
+    public void move(int x, int y, SimulationContext simulationContext) {
+        Direction choosenDirection = Direction.randomLetter();
 
-        cellSpecies.power = +eaten.power;
-    }
-
-    private void breedAtDirection(int x, int y, SimulationContext simulationContext, Direction direction, Species cellSpecies) {
-        this.<Boolean>executeActionAt(x, y, simulationContext, direction, (xArguemnt, yArgument) -> {
-            this.spezies[xArguemnt + 1][yArgument] = new Species(cellSpecies.context, xArguemnt, yArgument);
+        this.executeActionAt(x, y, simulationContext, choosenDirection, (xArgument, yArgument) -> {
+            var content = this.spezies[xArgument][yArgument];
+            this.spezies[xArgument][yArgument] = this.spezies[x][y];
+            this.spezies[x][y] = content;
             return true;
         });
     }
 
-    private boolean hasSpeciesForDirection(int x, int y, SimulationContext simulationContext, Direction direction) {
-        return this.<Boolean>executeActionAt(x, y, simulationContext, direction, (xArguemnt, yArgument) -> {
-            return this.hasSpeciesAtCell(xArguemnt, yArgument);
-        });
-    }
+    private void executeActionAt(int x, int y, SimulationContext simulationContext, Direction direction, BiFunction<Integer, Integer, Boolean> callback) {
+        try {
+            switch (direction) {
+                case RIGHT:
+                    if ((x + 1) > simulationContext.width) {
+                        throw new RuntimeException("Invalid width");
+                    }
 
-    private Species getSpeciesForDirection(int x, int y, SimulationContext simulationContext, Direction direction) {
-        return this.<Species>executeActionAt(x, y, simulationContext, direction, (xArguemnt, yArgument) -> {
-            return this.getSpeciesAtCell(xArguemnt, yArgument);
-        });
-    }
-
-    private <T> T executeActionAt(int x, int y, SimulationContext simulationContext, Direction direction, BiFunction<Integer, Integer, T> callback) {
-        switch (direction) {
-            case RIGHT:
-                if ((x + 1) > simulationContext.width) {
-                    throw new RuntimeException("Invalid width");
-                }
-
-                return (T) callback.<T>apply(x + 1, y);
-            case LEFT:
-                if ((x - 1) < 0) {
-                    throw new RuntimeException("Invalid width");
-                }
+                    callback.apply(x + 1, y);
+                    return;
+                case LEFT:
+                    if ((x - 1) < 0) {
+                        throw new RuntimeException("Invalid width");
+                    }
 
 
-                return (T) callback.<T>apply(x - 1, y);
-            case DOWN:
-                if ((y - 1) > 0) {
-                    throw new RuntimeException("Invalid height");
-                }
+                    callback.apply(x - 1, y);
+                    return;
+                case DOWN:
+                    if ((y - 1) < 0) {
+                        throw new RuntimeException("Invalid height");
+                    }
 
-                return (T) callback.<T>apply(x, y - 1);
+                    callback.apply(x, y - 1);
+                    return;
 
-            case TOP:
-                if ((y + 1) > simulationContext.height) {
-                    throw new RuntimeException("Invalid height");
-                }
+                case TOP:
+                    if ((y + 1) > simulationContext.height) {
+                        throw new RuntimeException("Invalid height");
+                    }
 
 
-                return (T) callback.<T>apply(x, y + 1);
+                    callback.apply(x, y + 1);
+                    return;
 
-            default:
-                throw new IllegalArgumentException();
+                default:
+                    throw new IllegalArgumentException();
+            }
+        } catch (RuntimeException $e) {
+
         }
 
     }
@@ -219,22 +192,7 @@ public class Board {
         return this.spezies[xAches][yAches] instanceof Species;
     }
 
-
     public Species getSpeciesAtCell(int xAches, int yAches) {
         return this.spezies[xAches][yAches];
     }
-
-    @FunctionalInterface
-    public interface FiFunction<A, B, C, D, E> {
-
-        /**
-         * Applies this function to the given arguments.
-         *
-         * @param t the first function argument
-         * @param u the second function argument
-         * @return the function result
-         */
-        void apply(A a, B b, C c, D d, E e);
-    }
-
 }

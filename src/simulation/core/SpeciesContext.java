@@ -10,23 +10,14 @@ public class SpeciesContext {
     private String[] killedBy;
     private String[] kills;
     public final String name;
-    public final int probabilityOfReproduction;
-    public final int probabilityOfSelection;
-    public final int probabilityOfMovement;
 
     public SpeciesContext(
             String name,
             String color,
-            int probabilityOfReproduction,
-            int probabilityOfSelection,
-            int probabilityOfMovement,
             String[] killedBy,
             String[] kills
     ) {
         this.name = name;
-        this.probabilityOfReproduction = probabilityOfReproduction;
-        this.probabilityOfSelection = probabilityOfSelection;
-        this.probabilityOfMovement = probabilityOfMovement;
         this.color = color;
         this.killedBy = killedBy;
         this.kills = kills;

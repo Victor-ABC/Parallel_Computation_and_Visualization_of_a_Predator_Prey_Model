@@ -11,9 +11,13 @@ public class SimulationContext {
 
     public int filledFields = 100;
 
+    public int probabilityOfReproduction = 1;
+    public int probabilityOfSelection = 1;
+    public int probabilityOfMovement = 1;
+
     public SpeciesContext[] spezies = new SpeciesContext[] {
-            new SpeciesContext( "rabbit", "#ff0000", 1, 1, 1, new String[]{"dog"}, new String[]{"fox"}),
-            new SpeciesContext( "dog", "#ff0000", 1, 1, 1, new String[]{"fox"}, new String[]{"rabbit"}),
-            new SpeciesContext( "fox", "#ff0000", 1, 1, 1, new String[]{"rabbit"}, new String[]{"fox"})
+            new SpeciesContext( "rabbit", "#ff0000",  new String[]{"dog"}, new String[]{"fox"}),
+            new SpeciesContext( "dog", "#ff0000",  new String[]{"fox"}, new String[]{"rabbit"}),
+            new SpeciesContext( "fox", "#ff0000",  new String[]{"rabbit"}, new String[]{"fox"})
     };
 }
