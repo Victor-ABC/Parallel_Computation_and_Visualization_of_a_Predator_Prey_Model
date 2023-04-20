@@ -1,17 +1,17 @@
 {
-  "width" : 200,
-  "height" : 200,
-  "max_iterations" : 10000,
+  "width": 200,
+  "height": 200,
+  "maxIterations": 1000,
   "seed": 50,
-  "filled_fields": 80,
-  "probability_of_reproduction" : 1,
-  "probability_of_selection" : 1,
-  "probability_of_movement" : 1,
-  "species" : [
+  "filledFields": 80,
+  "probabilityOfReproduction": 1,
+  "probabilityOfSelection": 1,
+  "probabilityOfMovement": 1,
+  "species": [
     {
       "name": "Affen",
       "color": "#FF0000",
-      "kills" : [
+      "kills": [
         "Hund"
       ]
     },
@@ -20,7 +20,7 @@
       "name": "Katze",
       "color": "#00FF00",
       "kills" : [
-        "Affe"
+        "Affen"
       ]
     },
     {

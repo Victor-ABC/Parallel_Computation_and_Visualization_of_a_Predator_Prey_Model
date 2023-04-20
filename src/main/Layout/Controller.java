@@ -1,4 +1,4 @@
-package simulation.Layout;
+package main.Layout;
 
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
@@ -7,8 +7,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
-import simulation.core.Board;
-import simulation.core.SimulationConfig;
+import main.core.Board;
+import main.core.config.SimulationConfig;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
@@ -28,8 +28,6 @@ public class Controller implements Initializable {
     private SimulationConfig context;
 
     private GraphicsContext gc;
-
-    private Boolean isStarted = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,10 +54,6 @@ public class Controller implements Initializable {
     }
 
     public void startOrStop() {
-
-
-        this.isStarted = true;
-
         new Thread(() -> {
             this.board.run(this.context, (i) -> {
                 Platform.runLater(() -> {
