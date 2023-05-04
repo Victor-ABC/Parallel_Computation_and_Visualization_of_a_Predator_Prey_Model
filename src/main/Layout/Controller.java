@@ -1,6 +1,6 @@
 package main.Layout;
 
-import javafx.application.Platform;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.CategoryAxis;
@@ -29,6 +29,10 @@ public class Controller implements Initializable {
 
     private GraphicsContext gc;
 
+    private Boolean isStarted = false;
+
+    private AnimationTimer animationTimer;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -51,15 +55,24 @@ public class Controller implements Initializable {
         System.out.println(context.height);
         this.board = board;
         this.createCanvas(context, board, this.gc);
+        this.animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                createCanvas(context, board, gc);
+            }
+        };
+        this.animationTimer.start();
     }
 
     public void startOrStop() {
+        if(this.isStarted) {
+            return;
+        }
+
+        this.isStarted = true;
+
         new Thread(() -> {
             this.board.run(this.context, (i) -> {
-                Platform.runLater(() -> {
-                    this.createCanvas(this.context, this.board, this.gc);
-                });
-
                 return true;
             });
         }).start();
