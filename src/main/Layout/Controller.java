@@ -3,8 +3,9 @@ package main.Layout;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.*;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import main.core.Board;
@@ -12,26 +13,32 @@ import main.core.config.SimulationConfig;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
+import main.core.config.SpeciesContext;
 import java.net.URL;
 import java.util.*;
 
 public class Controller implements Initializable {
 
-    public CategoryAxis xAxis;
+    public NumberAxis xAxis;
     public NumberAxis yAxis;
+
+    public LineChart lineChart;
+
+    public HashMap<String, Series> series = new HashMap<>();
 
     public Canvas centerCanvas;
 
     public HBox centerContent;
 
     public Board board;
-    private SimulationConfig context;
 
     private GraphicsContext gc;
 
     private Boolean isStarted = false;
 
     private AnimationTimer animationTimer;
+
+    private Integer tick = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -40,11 +47,9 @@ public class Controller implements Initializable {
     }
 
     public void printGame(SimulationConfig context, Board board) {
-        this.context = context;
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
         this.centerContent.setOnScroll((ScrollEvent event) -> {
-            System.out.println(event.getDeltaY());
             centerCanvas.setScaleX(centerCanvas.getScaleX() + (event.getDeltaY()  * 0.02));
             centerCanvas.setScaleY(centerCanvas.getScaleY() + (event.getDeltaY() * 0.02));
         });
@@ -52,9 +57,18 @@ public class Controller implements Initializable {
         this.centerCanvas.setScaleY(2);
         this.gc = centerCanvas.getGraphicsContext2D();
         this.gc.setFill(Color.WHITE);
-        System.out.println(context.height);
         this.board = board;
+        for (SpeciesContext species : context.species) {
+            var dataSeries = new Series();
+            dataSeries.setName(species.getName());
+
+            this.series.put(species.getName(), dataSeries);
+        }
+
+        this.lineChart.getData().addAll(this.series.values());
+
         this.createCanvas(context, board, this.gc);
+
         this.animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -71,18 +85,34 @@ public class Controller implements Initializable {
 
         this.isStarted = true;
 
-        new Thread(() -> {
-            this.board.run(this.context, (i) -> {
+            this.board.run((i) -> {
                 return true;
             });
-        }).start();
     }
 
     private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc) {
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        for (SpeciesContext species : context.species) {
+            hashMap.put(species.getName(), 0);
+        }
         for (int row = 0; row < context.width; row++) {
             for (int column = 0; column < context.height; column++) {
+                if(board.hasSpeciesAtCell(column, row)) {
+                    var species = board.getSpeciesAtCell(column, row).context.getName();
+                    hashMap.put(species, hashMap.get(species) + 1);
+                }
                 gc.getPixelWriter().setColor(column, row, Color.web(this.getColor(column,  row, board)));
             }
+        }
+
+        if(tick % 20 == 0 && this.isStarted) {
+            hashMap.forEach((s, integer) -> {
+                this.series.get(s).getData().add(new Data<Integer, Integer>(this.tick, hashMap.get(s)));
+            });
+        }
+
+        if(this.isStarted) {
+            this.tick++;
         }
     }
 

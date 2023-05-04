@@ -2,6 +2,7 @@ package main;
 
 import main.Layout.Controller;
 import main.core.Board;
+import main.core.BoardParallel;
 import main.core.RandomWrapper;
 import main.core.SimulationContextJsonFactory;
 
@@ -26,7 +27,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Board board = new Board(simulationConfig);
+        Board board = new BoardParallel(simulationConfig);
 
         FXMLLoader  loader   = new FXMLLoader(getClass().getResource("Layout/view.fxml"));
         Parent root = loader.load();

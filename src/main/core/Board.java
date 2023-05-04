@@ -4,16 +4,17 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+
 import main.core.config.SimulationConfig;
 import main.core.config.SpeciesContext;
 
 public class Board {
 
-    SpeciesOnField[][] speziesBoard;
+    public SpeciesOnField[][] speziesBoard;
 
-    SimulationConfig simulationConfig;
+    public SimulationConfig simulationConfig;
 
-    private final Random random = new Random();
+    public final Random random = new Random();
 
     public Board(SimulationConfig simulationConfig) {
         int count = simulationConfig.width * simulationConfig.height;
@@ -35,49 +36,50 @@ public class Board {
 
     }
 
-    public void run(SimulationConfig simulationConfig, Function<Integer, Boolean> callback) {
-        for (int i = 0; i < simulationConfig.maxIterations; i++) {
-            System.out.println(i);
-            for (int index = 0; index < simulationConfig.width * simulationConfig.height; index++) {
-                    int randomColumn = random.nextInt(simulationConfig.width);
-                    int randomRow = random.nextInt(simulationConfig.height);
+    public void run(Function<Integer, Boolean> callback) {
+        new Thread(() -> {
+            for (int i = 0; i < this.simulationConfig.maxIterations; i++) {
+                System.out.println(i);
+                for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
+                        int randomColumn = random.nextInt(this.simulationConfig.width);
+                        int randomRow = random.nextInt(this.simulationConfig.height);
+                        Direction choosenDirection = Direction.randomLetter();
 
-                    this.action(randomColumn, randomRow, simulationConfig);
+                        this.action(randomColumn, randomRow, choosenDirection);
+                }
+
+                callback.apply(i);
             }
-
-            callback.apply(i);
-        }
+        }).start();
     }
 
-    public void action(int x, int y, SimulationConfig simulationConfig) {
-        int all = simulationConfig.probabilityOfReproduction
-                + simulationConfig.probabilityOfSelection
-                + simulationConfig.probabilityOfMovement;
-
+    public void action(int x, int y, Direction direction) {
+        int all = this.simulationConfig.probabilityOfReproduction
+                + this.simulationConfig.probabilityOfSelection
+                + this.simulationConfig.probabilityOfMovement;
 
         var randomValue = RandomWrapper.getRandom().nextInt(all);
 
         randomValue -= simulationConfig.probabilityOfReproduction;
         if (randomValue < 0) {
-            this.reproduction(x, y, simulationConfig);
+            this.reproduction(x, y, direction);
             return;
         }
 
         randomValue -= simulationConfig.probabilityOfSelection;
         if (randomValue < 0) {
-            this.selection(x, y, simulationConfig);
+            this.selection(x, y, direction);
             return;
         }
 
-        this.move(x, y, simulationConfig);
+        this.move(x, y, direction);
     }
 
-    public void reproduction(int x, int y, SimulationConfig simulationConfig) {
-        Direction choosenDirection = Direction.randomLetter();
+    public void reproduction(int x, int y, Direction choosenDirection) {
         if (hasSpeciesAtCell(x, y)) {
             SpeciesOnField cellSpeciesOnField = this.getSpeciesAtCell(x, y);
 
-            this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
+            this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
                 if (!this.hasSpeciesAtCell(xOther, yOther)) {
                     this.speziesBoard[xOther][yOther] = new SpeciesOnField(cellSpeciesOnField.context);
                 }
@@ -85,7 +87,7 @@ public class Board {
                 return true;
             });
         } else  {
-            this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
+            this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
                 if (this.hasSpeciesAtCell(xOther, yOther)) {
                     SpeciesOnField argumentSpeciesOnField = this.getSpeciesAtCell(xOther, yOther);
                     this.speziesBoard[x][y] = new SpeciesOnField(argumentSpeciesOnField.context);
@@ -96,16 +98,14 @@ public class Board {
         }
     }
 
-    public void selection(int x, int y, SimulationConfig simulationConfig) {
-        Direction choosenDirection = Direction.randomLetter();
-
+    public void selection(int x, int y, Direction choosenDirection) {
         if (!hasSpeciesAtCell(x, y)) {
             return;
         }
 
         SpeciesOnField cellSpeciesOnField = this.getSpeciesAtCell(x, y);
 
-        this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
+        this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
             if (!this.hasSpeciesAtCell(xOther, yOther)) {
                 return true;
             }
@@ -124,10 +124,8 @@ public class Board {
         });
     }
 
-    public void move(int x, int y, SimulationConfig simulationConfig) {
-        Direction choosenDirection = Direction.randomLetter();
-
-        this.executeActionAt(x, y, simulationConfig, choosenDirection, (xOther, yOther) -> {
+    public void move(int x, int y, Direction choosenDirection) {
+        this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
             var content = this.speziesBoard[xOther][yOther];
             this.speziesBoard[xOther][yOther] = this.speziesBoard[x][y];
             this.speziesBoard[x][y] = content;
@@ -135,37 +133,39 @@ public class Board {
         });
     }
 
-    private void executeActionAt(int x, int y, SimulationConfig simulationConfig, Direction direction, BiFunction<Integer, Integer, Boolean> callback) {
+    public boolean executeActionAt(int x, int y, Direction direction, BiFunction<Integer, Integer, Boolean> callback) {
         try {
             switch (direction) {
                 case RIGHT -> {
-                    if ((x + 1) >= simulationConfig.width) {
+                    if ((x + 1) >= this.simulationConfig.width) {
                         throw new RuntimeException("Invalid width");
                     }
-                    callback.apply(x + 1, y);
+                    return callback.apply(x + 1, y);
                 }
                 case LEFT -> {
                     if ((x - 1) < 0) {
                         throw new RuntimeException("Invalid width");
                     }
-                    callback.apply(x - 1, y);
+                    return callback.apply(x - 1, y);
                 }
                 case TOP -> {
                     if ((y - 1) < 0) {
                         throw new RuntimeException("Invalid height");
                     }
-                    callback.apply(x, y - 1);
+                    return callback.apply(x, y - 1);
                 }
                 case DOWN -> {
-                    if ((y + 1) >= simulationConfig.height) {
+                    if ((y + 1) >= this.simulationConfig.height) {
                         throw new RuntimeException("Invalid height");
                     }
-                    callback.apply(x, y + 1);
+                    return callback.apply(x, y + 1);
                 }
                 default -> throw new IllegalArgumentException();
             }
         } catch (RuntimeException ignored) {
         }
+
+        return true;
     }
 
     public SpeciesOnField chooseRandomSpecies(SpeciesContext[] speciesContexts) {
