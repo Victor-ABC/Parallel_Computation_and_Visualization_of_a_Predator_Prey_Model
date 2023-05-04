@@ -44,11 +44,7 @@ public class BoardParallel extends Board {
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
-        for (int i = 1; i <= this.simulationConfig.maxIterations; i++) {
-            if ((i % threadIncrement) != 0) {
-                continue;
-            }
-
+        for (int i = threadIncrement; i <= this.simulationConfig.maxIterations; i += threadIncrement) {
             for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
                 int randomColumn = random.nextInt(this.simulationConfig.width);
                 int randomRow = random.nextInt(this.simulationConfig.height);
