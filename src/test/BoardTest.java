@@ -73,7 +73,7 @@ class BoardTest {
     void shouldWork_100PercentFullGameField() {
         for(int row = 0; row < simulationConfig.width ; row++) {
             for(int col = 0 ; col < simulationConfig.height; col++) {
-                assertTrue(board.hasSpeciesAtCell(row, col));
+                assertNotNull(board.getSpeciesAtCell(row, col));
             }
         }
     }
@@ -83,8 +83,8 @@ class BoardTest {
         Set<String> distinctSpecies = new HashSet<>();
         for(int row = 0; row < simulationConfig.width ; row++) {
             for(int col = 0 ; col < simulationConfig.height; col++) {
-                if (board.hasSpeciesAtCell(row, col)) {
-                    distinctSpecies.add(board.getSpeciesAtCell(row, col).context.name);
+                if (board.getSpeciesAtCell(row, col) != null) {
+                    distinctSpecies.add(board.getSpeciesAtCell(row, col).name);
                 }
             }
         }

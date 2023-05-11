@@ -44,7 +44,7 @@
     </center>
 
     <bottom>
-        <LineChart fx:id="lineChart" prefHeight="488.0" prefWidth="880.0" >
+        <LineChart fx:id="lineChart" maxHeight="488.0" prefWidth="880.0" animated="false" >
             <xAxis>
                 <NumberAxis side="BOTTOM" fx:id="xAxis" />
             </xAxis>

@@ -2,6 +2,7 @@ package main.core;
 
 import main.core.config.SimulationConfig;
 
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -43,7 +44,9 @@ public class BoardParallel extends Board {
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
-        for (int i = threadIncrement; i <= this.simulationConfig.maxIterations; i += threadIncrement) {
+        var random = new Random();
+
+        for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
             for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
                 int randomColumn = random.nextInt(this.simulationConfig.width);
                 int randomRow = random.nextInt(this.simulationConfig.height);

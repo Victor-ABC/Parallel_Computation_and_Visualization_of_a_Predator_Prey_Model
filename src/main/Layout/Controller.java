@@ -40,6 +40,8 @@ public class Controller implements Initializable {
 
     private Integer tick = 0;
 
+    private HashMap<String, Color> colors = new HashMap<String, Color>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -67,12 +69,12 @@ public class Controller implements Initializable {
 
         this.lineChart.getData().addAll(this.series.values());
 
-        this.createCanvas(context, board, this.gc);
+        this.createCanvas(context, board, this.gc, 0);
 
         this.animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                createCanvas(context, board, gc);
+                createCanvas(context, board, gc,  now);
             }
         };
         this.animationTimer.start();
@@ -85,42 +87,57 @@ public class Controller implements Initializable {
 
         this.isStarted = true;
 
-            this.board.run((i) -> {
-                return true;
-            });
+        this.board.run((i) -> {
+            return true;
+        });
     }
 
-    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc) {
+    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc, long timeNow) {
         HashMap<String, Integer> hashMap = new HashMap<>();
         for (SpeciesContext species : context.species) {
             hashMap.put(species.getName(), 0);
         }
+
         for (int row = 0; row < context.width; row++) {
             for (int column = 0; column < context.height; column++) {
-                if(board.hasSpeciesAtCell(column, row)) {
-                    var species = board.getSpeciesAtCell(column, row).context.getName();
-                    hashMap.put(species, hashMap.get(species) + 1);
+                var species = board.getSpeciesAtCell(column, row);
+
+                if (species != null) {
+                    String speciesName = species.getName();
+                    hashMap.put(speciesName, hashMap.get(speciesName) + 1);
                 }
-                gc.getPixelWriter().setColor(column, row, Color.web(this.getColor(column,  row, board)));
+                gc.getPixelWriter().setColor(column, row, this.getColor(column, row, board));
             }
         }
-
-        if(tick % 60 == 0 && this.isStarted) {
+        if (this.isStarted) {
             hashMap.forEach((s, integer) -> {
-                this.series.get(s).getData().add(new Data<Integer, Integer>(this.tick / 60, hashMap.get(s)));
+                this.series.get(s).getData().add(new Data<Integer, Integer>(tick, hashMap.get(s)));
             });
-        }
-
-        if(this.isStarted) {
-            this.tick++;
-        }
+            tick++;
+    }
     }
 
-    private String getColor(int column, int row, Board board) {
-        if(!board.hasSpeciesAtCell(column, row))  {
-            return "#fff";
+    private Color getColor(int column, int row, Board board) {
+       SpeciesContext speciesAtCell =  board.getSpeciesAtCell(column, row);
+
+        if(speciesAtCell == null)  {
+            if(this.colors.containsKey("#fff")) {
+                return this.colors.get("#fff");
+            }
+
+            Color whiteColor = Color.web("#fff");
+            this.colors.put("#fff", whiteColor);
+            return whiteColor;
         }
 
-        return board.getSpeciesAtCell(column, row).context.color;
+        String speciesColorString = speciesAtCell.color;
+
+        if(this.colors.containsKey(speciesColorString)) {
+            return this.colors.get(speciesColorString);
+        }
+
+        Color speciesColor = Color.web(speciesColorString);
+        this.colors.put(speciesColorString, speciesColor);
+        return speciesColor;
     }
 }

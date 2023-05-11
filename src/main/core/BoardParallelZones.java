@@ -2,6 +2,7 @@ package main.core;
 
 import main.core.config.SimulationConfig;
 
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -9,7 +10,7 @@ public class BoardParallelZones extends Board {
 
     public ReentrantLock[][] lockmap;
 
-    int threadCount = 2;
+    int threadCount = 1;
 
     public BoardParallelZones(SimulationConfig simulationConfig) {
         super(simulationConfig);
@@ -18,7 +19,7 @@ public class BoardParallelZones extends Board {
 
         for (int row = 0; row < simulationConfig.width; row++) {
             for (int col = 0; col < simulationConfig.height; col++) {
-                    this.lockmap[row][col] = new ReentrantLock();
+                this.lockmap[row][col] = new ReentrantLock();
             }
         }
     }
@@ -43,9 +44,11 @@ public class BoardParallelZones extends Board {
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
+        var random = new Random();
+
         var threadHeight = this.simulationConfig.height / this.threadCount;
 
-        for (int i = threadIncrement; i <= this.simulationConfig.maxIterations; i += threadIncrement) {
+        for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
             for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
                 int randomColumn = random.nextInt(this.simulationConfig.width);
                 int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
@@ -74,40 +77,24 @@ public class BoardParallelZones extends Board {
     }
 
     private boolean isCriticalZone(int x, int y) {
-        if(x == 0) {
-            return true;
+        if(x == 0 || y == 0) {
+            return Boolean.TRUE;
         }
 
-        if(y == 0) {
-            return true;
-        }
-
-        if(x == this.simulationConfig.width - 1) {
-            return true;
-        }
-
-        if(y == this.simulationConfig.height - 1) {
-            return true;
+        if(x == this.simulationConfig.width - 1 || y == this.simulationConfig.height - 1) {
+            return Boolean.TRUE;
         }
 
         var threadHeight = this.simulationConfig.height / this.threadCount;
 
-        if(y % threadHeight == 0) {
-            return true;
-        }
-
-        if(y % threadHeight == this.simulationConfig.height - 1) {
-            return true;
-        }
-
-        return false;
+        return y % threadHeight == 0 || y % threadHeight == this.simulationConfig.height - 1;
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
-            this.lockmap[x][y].lock();
+         this.lockmap[x][y].lock();
 
         this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
-                this.lockmap[xOther][yOther].lock();
+            this.lockmap[xOther][yOther].lock();
 
             return true;
         });
