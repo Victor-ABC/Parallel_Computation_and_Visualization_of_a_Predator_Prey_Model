@@ -105,9 +105,9 @@ public class Controller implements Initializable {
             }
         }
 
-        if(tick % 20 == 0 && this.isStarted) {
+        if(tick % 60 == 0 && this.isStarted) {
             hashMap.forEach((s, integer) -> {
-                this.series.get(s).getData().add(new Data<Integer, Integer>(this.tick, hashMap.get(s)));
+                this.series.get(s).getData().add(new Data<Integer, Integer>(this.tick / 60, hashMap.get(s)));
             });
         }
 
