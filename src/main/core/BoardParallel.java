@@ -2,7 +2,9 @@ package main.core;
 
 import main.core.config.SimulationConfig;
 
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -11,6 +13,8 @@ public class BoardParallel extends Board {
     public ReentrantLock[][] lockmap;
 
     int threadCount = 4;
+
+    ExecutorService pool;
 
     public BoardParallel(SimulationConfig simulationConfig) {
         super(simulationConfig);
@@ -22,12 +26,15 @@ public class BoardParallel extends Board {
                     this.lockmap[row][col] = new ReentrantLock();
             }
         }
+
+
+        pool = Executors.newFixedThreadPool(this.threadCount);
     }
 
     @Override
     public void run(Function<Integer, Boolean> callback) {
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
-            new Thread(new Runnable() {
+            this.pool.execute(new Runnable() {
                 private int number;
 
                 public Runnable init(int number) {
@@ -39,12 +46,12 @@ public class BoardParallel extends Board {
                 public void run() {
                     execute(this.number, callback);
                 }
-            }.init(threadIncrement)).start();
+            }.init(threadIncrement));
         }
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
-        var random = new Random();
+        var random = ThreadLocalRandom.current();
 
         for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
             for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
@@ -59,6 +66,8 @@ public class BoardParallel extends Board {
                 }
 
             }
+
+            callback.apply(i);
         }
     }
 

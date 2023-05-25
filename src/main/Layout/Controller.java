@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Label;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import main.core.Board;
@@ -16,11 +17,14 @@ import javafx.scene.paint.Color;
 import main.core.config.SpeciesContext;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Controller implements Initializable {
 
     public NumberAxis xAxis;
     public NumberAxis yAxis;
+
+    public Label iterationCount;
 
     public LineChart lineChart;
 
@@ -40,7 +44,11 @@ public class Controller implements Initializable {
 
     private Integer tick = 0;
 
+    private AtomicInteger iteration = new AtomicInteger(0);
+
     private HashMap<String, Color> colors = new HashMap<String, Color>();
+
+    private SpeciesContext speciesOnField[][];
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,6 +59,11 @@ public class Controller implements Initializable {
     public void printGame(SimulationConfig context, Board board) {
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
+        yAxis.setLowerBound((double) (context.height * context.width) / (context.species.length + 1 ));
+        yAxis.setUpperBound((double) (context.height * context.width) / (context.species.length));
+        yAxis.setTickUnit((double) ((context.height * context.width) / (context.species.length)) / 2);
+
+        this.speciesOnField = new SpeciesContext[context.width][context.height];
         this.centerContent.setOnScroll((ScrollEvent event) -> {
             centerCanvas.setScaleX(centerCanvas.getScaleX() + (event.getDeltaY()  * 0.02));
             centerCanvas.setScaleY(centerCanvas.getScaleY() + (event.getDeltaY() * 0.02));
@@ -88,38 +101,44 @@ public class Controller implements Initializable {
         this.isStarted = true;
 
         this.board.run((i) -> {
+            this.iteration.incrementAndGet();
             return true;
         });
     }
 
     private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc, long timeNow) {
-        HashMap<String, Integer> hashMap = new HashMap<>();
-        for (SpeciesContext species : context.species) {
-            hashMap.put(species.getName(), 0);
-        }
+        this.iterationCount.setText(Integer.toString(this.iteration.get()));
 
-        for (int row = 0; row < context.width; row++) {
-            for (int column = 0; column < context.height; column++) {
+        HashMap<String, Integer> hashMap = new HashMap<>();
+
+        for (int row = 0; row < context.height; row++) {
+            for (int column = 0; column < context.width; column++) {
                 var species = board.getSpeciesAtCell(column, row);
 
                 if (species != null) {
                     String speciesName = species.getName();
-                    hashMap.put(speciesName, hashMap.get(speciesName) + 1);
+                    hashMap.merge(speciesName, 1, Integer::sum);
                 }
-                gc.getPixelWriter().setColor(column, row, this.getColor(column, row, board));
+
+                if(this.speciesOnField[column][row] == species) {
+                    continue;
+                }
+
+                this.speciesOnField[column][row] = species;
+                gc.getPixelWriter().setColor(column, row, this.getColor(species));
             }
         }
         if (this.isStarted) {
             hashMap.forEach((s, integer) -> {
                 this.series.get(s).getData().add(new Data<Integer, Integer>(tick, hashMap.get(s)));
+                hashMap.put(s, 0);
             });
+
             tick++;
-    }
+        }
     }
 
-    private Color getColor(int column, int row, Board board) {
-       SpeciesContext speciesAtCell =  board.getSpeciesAtCell(column, row);
-
+    private Color getColor(SpeciesContext speciesAtCell) {
         if(speciesAtCell == null)  {
             if(this.colors.containsKey("#fff")) {
                 return this.colors.get("#fff");

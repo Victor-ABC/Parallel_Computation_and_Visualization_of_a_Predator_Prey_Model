@@ -18,7 +18,7 @@
         <HBox BorderPane.alignment="CENTER">
             <children>
                 <Label prefHeight="17.0" prefWidth="55.0" style="-fx-background-color: #C0C0C0;" text="Iteration: " />
-                <Label prefHeight="17.0" prefWidth="55.0" style="-fx-background-color: #C0C0C0;" text="0" />
+                <Label fx:id="iterationCount" prefHeight="17.0" prefWidth="55.0" style="-fx-background-color: #C0C0C0;" text="0" />
                 <Region prefHeight="17.0" prefWidth="587.0" style="-fx-background-color: #C0C0C0;" HBox.hgrow="ALWAYS" />
             </children>
         </HBox>
@@ -27,7 +27,6 @@
     <right>
         <VBox prefHeight="460.0" prefWidth="220.0" BorderPane.alignment="CENTER">
             <children>
-                    <TableView fx:id="speziesTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="170.0" prefWidth="200.0" style="-fx-background-color: #D3D3D3;" />
                     <ToggleButton mnemonicParsing="false"  text="Start/Stop" onAction="#startOrStop"/>
             </children>
         </VBox>
@@ -35,7 +34,6 @@
 
     <center>
             <ScrollPane fitToWidth="true" fitToHeight="true">
-
                 <HBox fx:id="centerContent" alignment="CENTER" BorderPane.alignment="CENTER" >
                 <Canvas fx:id="centerCanvas" style="-fx-background-color: #D3D3D3;"/>
                 </HBox>
@@ -49,7 +47,7 @@
                 <NumberAxis side="BOTTOM" fx:id="xAxis" />
             </xAxis>
             <yAxis>
-                <NumberAxis fx:id="yAxis" side="LEFT" />
+                <NumberAxis fx:id="yAxis" side="LEFT" autoRanging="false" />
             </yAxis>
         </LineChart>
     </bottom>

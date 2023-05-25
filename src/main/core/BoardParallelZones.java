@@ -2,7 +2,9 @@ package main.core;
 
 import main.core.config.SimulationConfig;
 
-import java.util.Random;
+import java.util.SplittableRandom;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -10,7 +12,9 @@ public class BoardParallelZones extends Board {
 
     public ReentrantLock[][] lockmap;
 
-    int threadCount = 1;
+    int threadCount = 4;
+
+    ExecutorService pool;
 
     public BoardParallelZones(SimulationConfig simulationConfig) {
         super(simulationConfig);
@@ -22,12 +26,14 @@ public class BoardParallelZones extends Board {
                 this.lockmap[row][col] = new ReentrantLock();
             }
         }
+
+        pool = Executors.newFixedThreadPool(this.threadCount);
     }
 
     @Override
     public void run(Function<Integer, Boolean> callback) {
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
-            new Thread(new Runnable() {
+            this.pool.execute(new Runnable() {
                 private int number;
 
                 public Runnable init(int number) {
@@ -39,12 +45,12 @@ public class BoardParallelZones extends Board {
                 public void run() {
                     execute(this.number, callback);
                 }
-            }.init(threadIncrement)).start();
+            }.init(threadIncrement));
         }
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
-        var random = new Random();
+        var random = new SplittableRandom();
 
         var threadHeight = this.simulationConfig.height / this.threadCount;
 
@@ -65,12 +71,14 @@ public class BoardParallelZones extends Board {
                     this.action(randomColumn, randomRow, choosenDirection);
                 }
             }
+
+            callback.apply(i);
         }
     }
 
     public boolean isCombinationInCriticalZone(int x, int y, Direction choosenDirection) {
         if(isCriticalZone(x, y)) {
-            return true;
+            return Boolean.TRUE;
         }
 
         return this.executeActionAt(x, y, choosenDirection, this::isCriticalZone);
@@ -96,7 +104,7 @@ public class BoardParallelZones extends Board {
         this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
             this.lockmap[xOther][yOther].lock();
 
-            return true;
+            return Boolean.TRUE;
         });
     }
 
@@ -106,7 +114,7 @@ public class BoardParallelZones extends Board {
         this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
             this.lockmap[xOther][yOther].unlock();
 
-            return true;
+            return Boolean.TRUE;
         });
     }
 }
