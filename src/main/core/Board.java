@@ -15,7 +15,7 @@ public class Board {
     public Config config;
 
     public final SplittableRandom randomSpeciesGenerator = new SplittableRandom();
-    private int overallProbability;
+    private final int overallProbability;
 
     public Board(Config config) {
         int count = config.width * config.height;

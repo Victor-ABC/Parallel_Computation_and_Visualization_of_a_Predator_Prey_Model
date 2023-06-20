@@ -35,10 +35,8 @@ public class BoardParallel extends Board {
     public void run(Function<Integer, Boolean> callback) {
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
             this.pool.execute(new Runnable() {
-                private int number;
 
-                public Runnable init(int number) {
-                    this.number = number;
+                public Runnable init() {
                     return this;
                 }
 
@@ -46,7 +44,7 @@ public class BoardParallel extends Board {
                 public void run() {
                     execute(callback);
                 }
-            }.init(threadIncrement));
+            }.init());
         }
     }
 

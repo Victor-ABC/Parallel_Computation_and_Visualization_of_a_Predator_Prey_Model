@@ -40,15 +40,13 @@ public class Controller implements Initializable {
 
     private Boolean isStarted = false;
 
-    private AnimationTimer animationTimer;
-
     private Integer tick = 0;
 
-    private AtomicInteger iteration = new AtomicInteger(0);
+    private final AtomicInteger iteration = new AtomicInteger(0);
 
-    private HashMap<String, Color> colors = new HashMap<String, Color>();
+    private final HashMap<String, Color> colors = new HashMap<>();
 
-    private Species speciesOnField[][];
+    private Species[][] speciesOnField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,15 +80,15 @@ public class Controller implements Initializable {
 
         this.lineChart.getData().addAll(this.series.values());
 
-        this.createCanvas(config, board, this.gc, 0);
+        this.createCanvas(config, board, this.gc);
 
-        this.animationTimer = new AnimationTimer() {
+        AnimationTimer animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                createCanvas(config, board, gc,  now);
+                createCanvas(config, board, gc);
             }
         };
-        this.animationTimer.start();
+        animationTimer.start();
     }
 
     public void startOrStop() {
@@ -106,7 +104,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void createCanvas(Config config, Board board, GraphicsContext gc, long timeNow) {
+    private void createCanvas(Config config, Board board, GraphicsContext gc) {
         this.iterationCount.setText(Integer.toString(this.iteration.get()));
 
         HashMap<String, Integer> hashMap = new HashMap<>();
@@ -130,7 +128,7 @@ public class Controller implements Initializable {
         }
         if (this.isStarted) {
             hashMap.forEach((s, integer) -> {
-                this.series.get(s).getData().add(new Data<Integer, Integer>(tick, hashMap.get(s)));
+                this.series.get(s).getData().add(new Data<>(tick, hashMap.get(s)));
                 hashMap.put(s, 0);
             });
 

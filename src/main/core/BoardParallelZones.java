@@ -49,7 +49,7 @@ public class BoardParallelZones extends Board {
         }
     }
 
-    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
+    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
         var random = new SplittableRandom();
 
         var threadHeight = this.config.height / this.threadCount;

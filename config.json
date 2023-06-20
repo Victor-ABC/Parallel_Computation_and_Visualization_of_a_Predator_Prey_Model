@@ -1,5 +1,5 @@
 {
-  "mode" : "sequential",
+  "mode" : "parallel_with_zones",
   "width": 200,
   "height": 200,
   "maxIterations": 1000,
