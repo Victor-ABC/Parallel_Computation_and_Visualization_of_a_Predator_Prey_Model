@@ -74,7 +74,6 @@ public class Controller implements Initializable {
         for (Species species : config.species) {
             var dataSeries = new Series();
             dataSeries.setName(species.getName());
-
             this.series.put(species.getName(), dataSeries);
         }
 

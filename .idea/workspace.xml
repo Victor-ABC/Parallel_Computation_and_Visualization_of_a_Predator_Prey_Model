@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/Layout/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Layout/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

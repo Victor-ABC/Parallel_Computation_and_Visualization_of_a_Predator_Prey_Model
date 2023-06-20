@@ -1,5 +1,11 @@
 package main.core;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import main.core.config.Config;
 
 import java.util.concurrent.ExecutorService;
@@ -32,20 +38,47 @@ public class BoardParallel extends Board {
     }
 
     @Override
+    /*
+    Mithilfe der map bekommen wir eine Referenz auf das Future des Executors/Tasks.
+    So kann man messen, wie lange die gesamte run-Methode dauert.
+    1. Start Time
+    2. run() -> aufgabe ausführen + main-thread wartet blockierend, bis sub-threads fertig sind
+    3. End Time -> Differenz
+     */
     public void run(Function<Integer, Boolean> callback) {
+        //Start Time
+        long startTime = System.currentTimeMillis();
+        Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
-            this.pool.execute(new Runnable() {
+            Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
 
-                public Runnable init() {
+                @Override
+                public Boolean call() throws Exception {
+                    execute(callback);
+                    return true;
+                }
+
+                public Callable<Boolean> init() {
                     return this;
                 }
 
-                @Override
-                public void run() {
-                    execute(callback);
-                }
             }.init());
+            futureMap.put(threadIncrement, future);
         }
+        //Wait for every result to return (blocking)
+        for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
+            try {
+                Integer key = entry.getKey();
+                Boolean value = entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
+                                                        //bis der Thread fertig ist
+                System.out.println("Thread-" + key.toString() + " is finished");
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        //End Time
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Duration: " + estimatedTime + " Milliseconds");
     }
 
     public void execute(Function<Integer, Boolean> callback) {
