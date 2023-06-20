@@ -17,9 +17,10 @@ import main.core.config.Config;
 public class Main extends Application {
 
     public static Config config;
+    public static final String PATH_TO_CONFIG = "config.json";
 
     public static void main(String[] args) {
-        config = loadSimulationContext("config.json");
+        config = loadConfig(PATH_TO_CONFIG);
         launch();
     }
 
@@ -49,7 +50,7 @@ public class Main extends Application {
         };
     }
 
-    private static Config loadSimulationContext(String path) {
+    private static Config loadConfig(String path) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(new File(path), Config.class);

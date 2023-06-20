@@ -56,14 +56,14 @@ public class Controller implements Initializable {
         yAxis.setLabel("Anzahl");
     }
 
-    public void printGame(Config context, Board board) {
-        this.centerCanvas.setHeight(context.height);
-        this.centerCanvas.setWidth(context.width);
-        yAxis.setLowerBound((double) (context.height * context.width) / (context.species.length + 1 ));
-        yAxis.setUpperBound((double) (context.height * context.width) / (context.species.length));
-        yAxis.setTickUnit((double) ((context.height * context.width) / (context.species.length)) / 2);
+    public void printGame(Config config, Board board) {
+        this.centerCanvas.setHeight(config.height);
+        this.centerCanvas.setWidth(config.width);
+        yAxis.setLowerBound((double) (config.height * config.width) / (config.species.length + 1 ));
+        yAxis.setUpperBound((double) (config.height * config.width) / (config.species.length));
+        yAxis.setTickUnit((double) ((config.height * config.width) / (config.species.length)) / 2);
 
-        this.speciesOnField = new Species[context.width][context.height];
+        this.speciesOnField = new Species[config.width][config.height];
         this.centerContent.setOnScroll((ScrollEvent event) -> {
             centerCanvas.setScaleX(centerCanvas.getScaleX() + (event.getDeltaY()  * 0.02));
             centerCanvas.setScaleY(centerCanvas.getScaleY() + (event.getDeltaY() * 0.02));
@@ -73,7 +73,7 @@ public class Controller implements Initializable {
         this.gc = centerCanvas.getGraphicsContext2D();
         this.gc.setFill(Color.WHITE);
         this.board = board;
-        for (Species species : context.species) {
+        for (Species species : config.species) {
             var dataSeries = new Series();
             dataSeries.setName(species.getName());
 
@@ -82,12 +82,12 @@ public class Controller implements Initializable {
 
         this.lineChart.getData().addAll(this.series.values());
 
-        this.createCanvas(context, board, this.gc, 0);
+        this.createCanvas(config, board, this.gc, 0);
 
         this.animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                createCanvas(context, board, gc,  now);
+                createCanvas(config, board, gc,  now);
             }
         };
         this.animationTimer.start();
@@ -106,13 +106,13 @@ public class Controller implements Initializable {
         });
     }
 
-    private void createCanvas(Config context, Board board, GraphicsContext gc, long timeNow) {
+    private void createCanvas(Config config, Board board, GraphicsContext gc, long timeNow) {
         this.iterationCount.setText(Integer.toString(this.iteration.get()));
 
         HashMap<String, Integer> hashMap = new HashMap<>();
 
-        for (int row = 0; row < context.height; row++) {
-            for (int column = 0; column < context.width; column++) {
+        for (int row = 0; row < config.height; row++) {
+            for (int column = 0; column < config.width; column++) {
                 var species = board.getSpeciesAtCell(column, row);
 
                 if (species != null) {
