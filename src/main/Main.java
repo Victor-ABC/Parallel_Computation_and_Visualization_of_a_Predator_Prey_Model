@@ -1,10 +1,7 @@
 package main;
 
 import main.Layout.Controller;
-import main.core.Board;
-import main.core.BoardParallel;
-import main.core.RandomWrapper;
-import main.core.SimulationContextJsonFactory;
+import main.core.*;
 
 
 import javafx.application.Application;
@@ -14,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import main.core.config.SimulationConfig;
 
+import java.util.Random;
+
 
 public class Main extends Application {
 
@@ -21,13 +20,12 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         simulationConfig = (new SimulationContextJsonFactory()).CreateSimulationContextFromJsonFile("config.json");
-        RandomWrapper.createRandom(simulationConfig.seed);
         launch();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Board board = new BoardParallel(simulationConfig);
+        Board board = new BoardParallelZones(simulationConfig);
 
         FXMLLoader  loader   = new FXMLLoader(getClass().getResource("Layout/view.fxml"));
         Parent root = loader.load();

@@ -1,8 +1,7 @@
 {
   "width": 200,
-  "height": 200,
+  "height": 400,
   "maxIterations": 1000,
-  "seed": 50,
   "filledFields": 80,
   "probabilityOfReproduction": 1,
   "probabilityOfSelection": 1,

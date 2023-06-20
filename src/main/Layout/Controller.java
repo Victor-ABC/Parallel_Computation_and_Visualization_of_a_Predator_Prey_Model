@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Label;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import main.core.Board;
@@ -16,11 +17,14 @@ import javafx.scene.paint.Color;
 import main.core.config.SpeciesContext;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Controller implements Initializable {
 
     public NumberAxis xAxis;
     public NumberAxis yAxis;
+
+    public Label iterationCount;
 
     public LineChart lineChart;
 
@@ -40,6 +44,12 @@ public class Controller implements Initializable {
 
     private Integer tick = 0;
 
+    private AtomicInteger iteration = new AtomicInteger(0);
+
+    private HashMap<String, Color> colors = new HashMap<String, Color>();
+
+    private SpeciesContext speciesOnField[][];
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -49,6 +59,11 @@ public class Controller implements Initializable {
     public void printGame(SimulationConfig context, Board board) {
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
+        yAxis.setLowerBound((double) (context.height * context.width) / (context.species.length + 1 ));
+        yAxis.setUpperBound((double) (context.height * context.width) / (context.species.length));
+        yAxis.setTickUnit((double) ((context.height * context.width) / (context.species.length)) / 2);
+
+        this.speciesOnField = new SpeciesContext[context.width][context.height];
         this.centerContent.setOnScroll((ScrollEvent event) -> {
             centerCanvas.setScaleX(centerCanvas.getScaleX() + (event.getDeltaY()  * 0.02));
             centerCanvas.setScaleY(centerCanvas.getScaleY() + (event.getDeltaY() * 0.02));
@@ -67,12 +82,12 @@ public class Controller implements Initializable {
 
         this.lineChart.getData().addAll(this.series.values());
 
-        this.createCanvas(context, board, this.gc);
+        this.createCanvas(context, board, this.gc, 0);
 
         this.animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                createCanvas(context, board, gc);
+                createCanvas(context, board, gc,  now);
             }
         };
         this.animationTimer.start();
@@ -85,42 +100,63 @@ public class Controller implements Initializable {
 
         this.isStarted = true;
 
-            this.board.run((i) -> {
-                return true;
-            });
+        this.board.run((i) -> {
+            this.iteration.incrementAndGet();
+            return true;
+        });
     }
 
-    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc) {
+    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc, long timeNow) {
+        this.iterationCount.setText(Integer.toString(this.iteration.get()));
+
         HashMap<String, Integer> hashMap = new HashMap<>();
-        for (SpeciesContext species : context.species) {
-            hashMap.put(species.getName(), 0);
-        }
-        for (int row = 0; row < context.width; row++) {
-            for (int column = 0; column < context.height; column++) {
-                if(board.hasSpeciesAtCell(column, row)) {
-                    var species = board.getSpeciesAtCell(column, row).context.getName();
-                    hashMap.put(species, hashMap.get(species) + 1);
+
+        for (int row = 0; row < context.height; row++) {
+            for (int column = 0; column < context.width; column++) {
+                var species = board.getSpeciesAtCell(column, row);
+
+                if (species != null) {
+                    String speciesName = species.getName();
+                    hashMap.merge(speciesName, 1, Integer::sum);
                 }
-                gc.getPixelWriter().setColor(column, row, Color.web(this.getColor(column,  row, board)));
+
+                if(this.speciesOnField[column][row] == species) {
+                    continue;
+                }
+
+                this.speciesOnField[column][row] = species;
+                gc.getPixelWriter().setColor(column, row, this.getColor(species));
             }
         }
-
-        if(tick % 20 == 0 && this.isStarted) {
+        if (this.isStarted) {
             hashMap.forEach((s, integer) -> {
-                this.series.get(s).getData().add(new Data<Integer, Integer>(this.tick, hashMap.get(s)));
+                this.series.get(s).getData().add(new Data<Integer, Integer>(tick, hashMap.get(s)));
+                hashMap.put(s, 0);
             });
-        }
 
-        if(this.isStarted) {
-            this.tick++;
+            tick++;
         }
     }
 
-    private String getColor(int column, int row, Board board) {
-        if(!board.hasSpeciesAtCell(column, row))  {
-            return "#fff";
+    private Color getColor(SpeciesContext speciesAtCell) {
+        if(speciesAtCell == null)  {
+            if(this.colors.containsKey("#fff")) {
+                return this.colors.get("#fff");
+            }
+
+            Color whiteColor = Color.web("#fff");
+            this.colors.put("#fff", whiteColor);
+            return whiteColor;
         }
 
-        return board.getSpeciesAtCell(column, row).context.color;
+        String speciesColorString = speciesAtCell.color;
+
+        if(this.colors.containsKey(speciesColorString)) {
+            return this.colors.get(speciesColorString);
+        }
+
+        Color speciesColor = Color.web(speciesColorString);
+        this.colors.put(speciesColorString, speciesColor);
+        return speciesColor;
     }
 }
