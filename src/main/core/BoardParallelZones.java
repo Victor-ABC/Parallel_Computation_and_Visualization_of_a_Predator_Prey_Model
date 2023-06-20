@@ -1,5 +1,11 @@
 package main.core;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import main.core.config.Config;
 
 import java.util.SplittableRandom;
@@ -32,21 +38,40 @@ public class BoardParallelZones extends Board {
 
     @Override
     public void run(Function<Integer, Boolean> callback) {
+        //Start Time
+        long startTime = System.currentTimeMillis();
+        Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
-            this.pool.execute(new Runnable() {
+            Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    execute(this.number, callback);
+                    return true;
+                }
+
                 private int number;
 
-                public Runnable init(int number) {
-                    this.number = number;
+                public Callable<Boolean> init(int number) {
                     return this;
                 }
 
-                @Override
-                public void run() {
-                    execute(this.number, callback);
-                }
             }.init(threadIncrement));
+            futureMap.put(threadIncrement, future);
         }
+        //Wait for every result to return (blocking)
+        for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
+            try {
+                Integer key = entry.getKey();
+                Boolean value = entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
+                //bis der Thread fertig ist
+                System.out.println("Thread-" + key.toString() + " is finished");
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        //End Time
+        long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Duration: " + estimatedTime + " Milliseconds");
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
