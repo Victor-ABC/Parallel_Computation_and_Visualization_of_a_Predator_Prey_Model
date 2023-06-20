@@ -1,6 +1,6 @@
 package main.core;
 
-import main.core.config.SimulationConfig;
+import main.core.config.Config;
 
 import java.util.SplittableRandom;
 import java.util.concurrent.ExecutorService;
@@ -16,13 +16,13 @@ public class BoardParallelZones extends Board {
 
     ExecutorService pool;
 
-    public BoardParallelZones(SimulationConfig simulationConfig) {
-        super(simulationConfig);
+    public BoardParallelZones(Config config) {
+        super(config);
 
-        this.lockmap = new ReentrantLock[simulationConfig.width][simulationConfig.height];
+        this.lockmap = new ReentrantLock[config.width][config.height];
 
-        for (int row = 0; row < simulationConfig.width; row++) {
-            for (int col = 0; col < simulationConfig.height; col++) {
+        for (int row = 0; row < config.width; row++) {
+            for (int col = 0; col < config.height; col++) {
                 this.lockmap[row][col] = new ReentrantLock();
             }
         }
@@ -52,11 +52,11 @@ public class BoardParallelZones extends Board {
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
         var random = new SplittableRandom();
 
-        var threadHeight = this.simulationConfig.height / this.threadCount;
+        var threadHeight = this.config.height / this.threadCount;
 
-        for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
-            for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
-                int randomColumn = random.nextInt(this.simulationConfig.width);
+        for (int i = 0; i <= this.config.maxIterations / this.threadCount; i++) {
+            for (int index = 0; index < this.config.width * this.config.height; index++) {
+                int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
                 Direction choosenDirection = Direction.randomLetter();
 
@@ -89,13 +89,13 @@ public class BoardParallelZones extends Board {
             return Boolean.TRUE;
         }
 
-        if(x == this.simulationConfig.width - 1 || y == this.simulationConfig.height - 1) {
+        if(x == this.config.width - 1 || y == this.config.height - 1) {
             return Boolean.TRUE;
         }
 
-        var threadHeight = this.simulationConfig.height / this.threadCount;
+        var threadHeight = this.config.height / this.threadCount;
 
-        return y % threadHeight == 0 || y % threadHeight == this.simulationConfig.height - 1;
+        return y % threadHeight == 0 || y % threadHeight == this.config.height - 1;
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {

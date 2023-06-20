@@ -1,6 +1,6 @@
 package main.core;
 
-import main.core.config.SimulationConfig;
+import main.core.config.Config;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,13 +16,13 @@ public class BoardParallel extends Board {
 
     ExecutorService pool;
 
-    public BoardParallel(SimulationConfig simulationConfig) {
-        super(simulationConfig);
+    public BoardParallel(Config config) {
+        super(config);
 
-        this.lockmap = new ReentrantLock[simulationConfig.width][simulationConfig.height];
+        this.lockmap = new ReentrantLock[config.width][config.height];
 
-        for (int row = 0; row < simulationConfig.width; row++) {
-            for (int col = 0; col < simulationConfig.height; col++) {
+        for (int row = 0; row < config.width; row++) {
+            for (int col = 0; col < config.height; col++) {
                     this.lockmap[row][col] = new ReentrantLock();
             }
         }
@@ -53,10 +53,10 @@ public class BoardParallel extends Board {
     public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
 
-        for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
-            for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
-                int randomColumn = random.nextInt(this.simulationConfig.width);
-                int randomRow = random.nextInt(this.simulationConfig.height);
+        for (int i = 0; i <= this.config.maxIterations / this.threadCount; i++) {
+            for (int index = 0; index < this.config.width * this.config.height; index++) {
+                int randomColumn = random.nextInt(this.config.width);
+                int randomRow = random.nextInt(this.config.height);
                 Direction choosenDirection = Direction.randomLetter();
                 this.getLock(randomColumn, randomRow, choosenDirection);
                 try {

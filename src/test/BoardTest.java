@@ -6,13 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import main.core.Board;
-import main.core.config.SimulationConfig;
-import main.core.config.SpeciesContext;
+import main.core.config.Config;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +18,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 class BoardTest {
     Board board;
-    SimulationConfig simulationConfig;
+    Config config;
     String jsonString = """
             {
               "width": 3,
@@ -61,9 +58,9 @@ class BoardTest {
     void setUp() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            simulationConfig = mapper.readValue(jsonString, SimulationConfig.class);
-            board = new Board(simulationConfig);
-            assertNotNull(simulationConfig);
+            config = mapper.readValue(jsonString, Config.class);
+            board = new Board(config);
+            assertNotNull(config);
             assertNotNull(board);
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,8 +68,8 @@ class BoardTest {
     }
     @Test
     void shouldWork_100PercentFullGameField() {
-        for(int row = 0; row < simulationConfig.width ; row++) {
-            for(int col = 0 ; col < simulationConfig.height; col++) {
+        for(int row = 0; row < config.width ; row++) {
+            for(int col = 0 ; col < config.height; col++) {
                 assertNotNull(board.getSpeciesAtCell(row, col));
             }
         }
@@ -81,14 +78,14 @@ class BoardTest {
     @Test
     void shouldWork_differentSpecies() {
         Set<String> distinctSpecies = new HashSet<>();
-        for(int row = 0; row < simulationConfig.width ; row++) {
-            for(int col = 0 ; col < simulationConfig.height; col++) {
+        for(int row = 0; row < config.width ; row++) {
+            for(int col = 0 ; col < config.height; col++) {
                 if (board.getSpeciesAtCell(row, col) != null) {
                     distinctSpecies.add(board.getSpeciesAtCell(row, col).name);
                 }
             }
         }
-        assertEquals(distinctSpecies.size(), simulationConfig.species.length);
+        assertEquals(distinctSpecies.size(), config.species.length);
     }
 
 }

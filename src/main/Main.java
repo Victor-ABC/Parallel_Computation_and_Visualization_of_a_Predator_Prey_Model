@@ -11,15 +11,15 @@ import main.Layout.Controller;
 import main.core.Board;
 import main.core.BoardParallel;
 import main.core.BoardParallelZones;
-import main.core.config.SimulationConfig;
+import main.core.config.Config;
 
 
 public class Main extends Application {
 
-    public static SimulationConfig simulationConfig;
+    public static Config config;
 
     public static void main(String[] args) {
-        simulationConfig = loadSimulationContext("config.json");
+        config = loadSimulationContext("config.json");
         launch();
     }
 
@@ -37,22 +37,22 @@ public class Main extends Application {
         primaryStage.setMinWidth(820);
         primaryStage.setMinHeight(750);
         primaryStage.show();
-        myController.printGame(simulationConfig, board);
+        myController.printGame(config, board);
     }
 
     private Board getBoard() {
-        return switch (simulationConfig.mode) {
-            case "sequential" -> new Board(simulationConfig);
-            case "parallel_without_zones" -> new BoardParallel(simulationConfig);
-            case "parallel_with_zones" -> new BoardParallelZones(simulationConfig);
+        return switch (config.mode) {
+            case "sequential" -> new Board(config);
+            case "parallel_without_zones" -> new BoardParallel(config);
+            case "parallel_with_zones" -> new BoardParallelZones(config);
             default -> throw new IllegalArgumentException("Board-Type is not supported!");
         };
     }
 
-    private static SimulationConfig loadSimulationContext(String path) {
+    private static Config loadSimulationContext(String path) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(new File(path), SimulationConfig.class);
+            return mapper.readValue(new File(path), Config.class);
         } catch (Exception e) {
             throw new RuntimeException("Json file could not be parsed: " + e);
         }

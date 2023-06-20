@@ -10,11 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import main.core.Board;
-import main.core.config.SimulationConfig;
+import main.core.config.Config;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import main.core.config.SpeciesContext;
+import main.core.config.Species;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +48,7 @@ public class Controller implements Initializable {
 
     private HashMap<String, Color> colors = new HashMap<String, Color>();
 
-    private SpeciesContext speciesOnField[][];
+    private Species speciesOnField[][];
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,14 +56,14 @@ public class Controller implements Initializable {
         yAxis.setLabel("Anzahl");
     }
 
-    public void printGame(SimulationConfig context, Board board) {
+    public void printGame(Config context, Board board) {
         this.centerCanvas.setHeight(context.height);
         this.centerCanvas.setWidth(context.width);
         yAxis.setLowerBound((double) (context.height * context.width) / (context.species.length + 1 ));
         yAxis.setUpperBound((double) (context.height * context.width) / (context.species.length));
         yAxis.setTickUnit((double) ((context.height * context.width) / (context.species.length)) / 2);
 
-        this.speciesOnField = new SpeciesContext[context.width][context.height];
+        this.speciesOnField = new Species[context.width][context.height];
         this.centerContent.setOnScroll((ScrollEvent event) -> {
             centerCanvas.setScaleX(centerCanvas.getScaleX() + (event.getDeltaY()  * 0.02));
             centerCanvas.setScaleY(centerCanvas.getScaleY() + (event.getDeltaY() * 0.02));
@@ -73,7 +73,7 @@ public class Controller implements Initializable {
         this.gc = centerCanvas.getGraphicsContext2D();
         this.gc.setFill(Color.WHITE);
         this.board = board;
-        for (SpeciesContext species : context.species) {
+        for (Species species : context.species) {
             var dataSeries = new Series();
             dataSeries.setName(species.getName());
 
@@ -106,7 +106,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void createCanvas(SimulationConfig context, Board board, GraphicsContext gc, long timeNow) {
+    private void createCanvas(Config context, Board board, GraphicsContext gc, long timeNow) {
         this.iterationCount.setText(Integer.toString(this.iteration.get()));
 
         HashMap<String, Integer> hashMap = new HashMap<>();
@@ -138,7 +138,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private Color getColor(SpeciesContext speciesAtCell) {
+    private Color getColor(Species speciesAtCell) {
         if(speciesAtCell == null)  {
             if(this.colors.containsKey("#fff")) {
                 return this.colors.get("#fff");
