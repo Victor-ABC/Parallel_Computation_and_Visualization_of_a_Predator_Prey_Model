@@ -44,13 +44,13 @@ public class BoardParallel extends Board {
 
                 @Override
                 public void run() {
-                    execute(this.number, callback);
+                    execute(callback);
                 }
             }.init(threadIncrement));
         }
     }
 
-    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
+    public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
 
         for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {

@@ -1,9 +1,9 @@
 {
-  "mode" : "sequential",
+  "mode" : "parallel_with_zones",
   "width": 200,
   "height": 200,
   "maxIterations": 1000,
-  "filledFields": 80,
+  "filledFieldsInPercent": 80,
   "probabilityOfReproduction": 1,
   "probabilityOfSelection": 1,
   "probabilityOfMovement": 1,

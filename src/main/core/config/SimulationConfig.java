@@ -12,7 +12,7 @@ public class SimulationConfig {
     public int height;
     public int maxIterations;
     public long seed;
-    public int filledFields;
+    public int filledFieldsInPercent;
 
     public int probabilityOfReproduction;
     public int probabilityOfSelection;

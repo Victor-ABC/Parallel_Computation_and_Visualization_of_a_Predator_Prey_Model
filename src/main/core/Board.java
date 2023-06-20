@@ -26,7 +26,7 @@ public class Board {
 
         ArrayList<Integer> range = new ArrayList<>(IntStream.rangeClosed(0, count ).boxed().toList());
         Collections.shuffle(range);
-        List<Integer> filledFields = range.subList(0, (count / 100) * simulationConfig.filledFields);
+        List<Integer> filledFields = range.subList(0, (count / 100) * simulationConfig.filledFieldsInPercent);
 
         this.speziesBoard = new SpeciesContext[simulationConfig.width][simulationConfig.height];
         this.simulationConfig = simulationConfig;

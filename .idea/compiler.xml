@@ -12,7 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17">
-      <module name="pvr_projekt" target="16" />
+      <module name="pvr_projekt" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
