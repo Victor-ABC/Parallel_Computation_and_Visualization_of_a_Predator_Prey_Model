@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SimulationConfig {
 
+    public String mode;
     public int width;
     public int height;
     public int maxIterations;

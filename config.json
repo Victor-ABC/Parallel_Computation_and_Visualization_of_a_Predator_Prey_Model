@@ -1,6 +1,7 @@
 {
+  "mode" : "sequential",
   "width": 200,
-  "height": 400,
+  "height": 200,
   "maxIterations": 1000,
   "filledFields": 80,
   "probabilityOfReproduction": 1,
@@ -8,25 +9,43 @@
   "probabilityOfMovement": 1,
   "species": [
     {
-      "name": "Affen",
+      "name": "Rot",
       "color": "#FF0000",
       "kills": [
-        "Hund"
+        "Gelb",
+        "Blau"
       ]
     },
-
     {
-      "name": "Katze",
-      "color": "#00FF00",
+      "name": "Gelb",
+      "color": "#FFFF00",
       "kills" : [
-        "Affen"
+        "Blau",
+        "Orange"
       ]
     },
     {
-      "name": "Hund",
+      "name": "Blau",
       "color" : "#0000FF",
       "kills" : [
-        "Katze"
+        "Orange",
+        "Gruen"
+      ]
+    },
+    {
+      "name": "Orange",
+      "color": "#FF8000",
+      "kills": [
+        "Gruen",
+        "Rot"
+      ]
+    },
+    {
+      "name": "Gruen",
+      "color": "#00FF00",
+      "kills": [
+        "Rot",
+        "Gelb"
       ]
     }
   ]
