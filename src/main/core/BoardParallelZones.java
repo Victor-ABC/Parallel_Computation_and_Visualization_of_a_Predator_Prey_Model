@@ -58,20 +58,25 @@ public class BoardParallelZones extends Board {
             }.init(threadIncrement));
             futureMap.put(threadIncrement, future);
         }
-        //Wait for every result to return (blocking)
-        for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
-            try {
-                Integer key = entry.getKey();
-                Boolean value = entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
-                //bis der Thread fertig ist
-                System.out.println("Thread-" + key.toString() + " is finished");
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        //End Time
-        long estimatedTime = System.currentTimeMillis() - startTime;
-        System.out.println("Duration: " + estimatedTime + " Milliseconds");
+        //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
+        //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
+        //       Anwendung "freezed" komplett
+        Thread t = new Thread(
+                () -> {
+                    for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
+                        try {
+                            entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
+                            //bis der Thread fertig ist
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //End Time
+                    long estimatedTime = System.currentTimeMillis() - startTime;
+                    System.out.println("Duration: " + estimatedTime + " Milliseconds");
+                }
+        );
+        t.start();
     }
 
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
