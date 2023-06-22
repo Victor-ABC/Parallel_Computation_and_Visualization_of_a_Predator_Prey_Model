@@ -18,8 +18,6 @@ public class BoardParallelZones extends Board {
 
     public ReentrantLock[][] lockmap;
 
-    int threadCount = 4;
-
     ExecutorService pool;
 
     public BoardParallelZones(Config config) {
@@ -33,7 +31,7 @@ public class BoardParallelZones extends Board {
             }
         }
 
-        pool = Executors.newFixedThreadPool(this.threadCount);
+        pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
     @Override
@@ -41,7 +39,7 @@ public class BoardParallelZones extends Board {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
+        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
@@ -83,9 +81,9 @@ public class BoardParallelZones extends Board {
     public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
         var random = new SplittableRandom();
 
-        var threadHeight = this.config.height / this.threadCount;
+        var threadHeight = this.config.height / this.config.numberOfThreads;
 
-        for (int i = 0; i <= this.config.maxIterations / this.threadCount; i++) {
+        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
             for (int index = 0; index < this.config.width * this.config.height; index++) {
                 int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
@@ -124,7 +122,7 @@ public class BoardParallelZones extends Board {
             return Boolean.TRUE;
         }
 
-        var threadHeight = this.config.height / this.threadCount;
+        var threadHeight = this.config.height / this.config.numberOfThreads;
 
         return y % threadHeight == 0 || y % threadHeight == this.config.height - 1;
     }

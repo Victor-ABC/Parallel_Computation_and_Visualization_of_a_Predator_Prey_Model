@@ -26,7 +26,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        config.mode = "parallel_with_zones";
         Board board = getBoard();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Layout/view.fxml"));

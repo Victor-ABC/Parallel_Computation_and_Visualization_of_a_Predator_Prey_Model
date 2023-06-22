@@ -43,19 +43,27 @@ public class Board {
         var random = new Random();
 
         new Thread(() -> {
-            for (int i = 0; i < this.config.maxIterations; i++) {
-                System.out.println(i);
-                for (int index = 0; index < this.config.width * this.config.height; index++) {
-                        int randomColumn = random.nextInt(this.config.width);
-                        int randomRow = random.nextInt(this.config.height);
-                        Direction choosenDirection = Direction.randomLetter();
-
-                        this.action(randomColumn, randomRow, choosenDirection);
-                }
-
-                callback.apply(i);
-            }
+            //Start Time
+            long startTime = System.currentTimeMillis();
+            execute(callback, random);
+            //End Time
+            long estimatedTime = System.currentTimeMillis() - startTime;
+            System.out.println("Duration: " + estimatedTime + " Milliseconds");
         }).start();
+    }
+
+    private void execute(Function<Integer, Boolean> callback, Random random) {
+        for (int i = 0; i < this.config.maxIterations; i++) {
+            for (int index = 0; index < this.config.width * this.config.height; index++) {
+                    int randomColumn = random.nextInt(this.config.width);
+                    int randomRow = random.nextInt(this.config.height);
+                    Direction choosenDirection = Direction.randomLetter();
+
+                    this.action(randomColumn, randomRow, choosenDirection);
+            }
+
+            callback.apply(i);
+        }
     }
 
     public void action(int x, int y, Direction direction) {

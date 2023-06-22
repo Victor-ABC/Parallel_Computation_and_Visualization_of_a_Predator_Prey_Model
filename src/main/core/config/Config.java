@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 public class Config {
 
     public String mode;
+    public int numberOfThreads;
     public int width;
     public int height;
     public int maxIterations;

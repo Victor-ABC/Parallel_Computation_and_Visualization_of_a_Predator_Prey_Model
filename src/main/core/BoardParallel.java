@@ -18,8 +18,6 @@ public class BoardParallel extends Board {
 
     public ReentrantLock[][] lockmap;
 
-    int threadCount = 4;
-
     ExecutorService pool;
 
     public BoardParallel(Config config) {
@@ -34,7 +32,7 @@ public class BoardParallel extends Board {
         }
 
 
-        pool = Executors.newFixedThreadPool(this.threadCount);
+        pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
     @Override
@@ -49,7 +47,7 @@ public class BoardParallel extends Board {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
+        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
 
                 @Override
@@ -89,7 +87,7 @@ public class BoardParallel extends Board {
     public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
 
-        for (int i = 0; i <= this.config.maxIterations / this.threadCount; i++) {
+        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
             for (int index = 0; index < this.config.width * this.config.height; index++) {
                 int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(this.config.height);
