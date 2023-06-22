@@ -3,11 +3,15 @@ package main.core;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import main.core.config.Config;
 
 public class Util {
 
@@ -75,6 +79,23 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> getData(Config config, long estimatedTime) {
+        List<String> result = new ArrayList<>();
+        Class<?> myClass = config.getClass();
+        result.add(Util.convertToString(estimatedTime));//Always: Time first
+        for (String header : config.getMetrics().useFields) {
+            String methodName = "get" + Util.uppercaseFirstChar(header);
+            try {
+                Method method = myClass.getMethod(methodName);//Reflection
+                String value = Util.convertToString(method.invoke(config));
+                result.add(value);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
     public static String uppercaseFirstChar(String input) {

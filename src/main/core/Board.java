@@ -1,7 +1,7 @@
 package main.core;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import static main.core.Util.getData;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,26 +55,10 @@ public class Board {
             execute(callback, random);
             //End Time
             long estimatedTime = System.currentTimeMillis() - startTime;
-            Util.appendRowInCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(), getData(estimatedTime));
+            Util.appendRowInCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+                    getData(config, estimatedTime));
             System.out.println("Duration: " + estimatedTime + " Milliseconds");
         }).start();
-    }
-
-    private List<String> getData(long estimatedTime) {
-        List<String> result = new ArrayList<>();
-        Class<?> myClass = config.getClass();
-        result.add(Util.convertToString(estimatedTime));//Always: Time first
-        for (String header : config.getMetrics().useFields) {
-            String methodName = "get" + Util.uppercaseFirstChar(header);
-            try {
-                Method method = myClass.getMethod(methodName);//Reflection
-                String value = Util.convertToString(method.invoke(config));
-                result.add(value);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
     }
 
     private void execute(Function<Integer, Boolean> callback, Random random) {

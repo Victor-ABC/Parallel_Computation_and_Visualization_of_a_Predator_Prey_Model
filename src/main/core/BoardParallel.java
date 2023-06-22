@@ -1,18 +1,18 @@
 package main.core;
 
+import static main.core.Util.getData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import main.core.config.Config;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+import main.core.config.Config;
 
 public class BoardParallel extends Board {
 
@@ -44,6 +44,8 @@ public class BoardParallel extends Board {
     3. End Time -> Differenz
      */
     public void run(Function<Integer, Boolean> callback) {
+        Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+                config.getMetrics().getUseFields());
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
@@ -78,6 +80,8 @@ public class BoardParallel extends Board {
                     }
                     //End Time
                     long estimatedTime = System.currentTimeMillis() - startTime;
+                    Util.appendRowInCSV(config.getMetrics().getPath(),
+                            config.getMetrics().getMetricsCsvFileName(), getData(config, estimatedTime));
                     System.out.println("Duration: " + estimatedTime + " Milliseconds");
                 }
         );
