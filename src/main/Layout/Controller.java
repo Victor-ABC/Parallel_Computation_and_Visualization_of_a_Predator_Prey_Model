@@ -49,6 +49,10 @@ public class Controller implements Initializable {
 
     private Species[][] speciesOnField;
 
+    private long startTime;
+
+    private Config config;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
@@ -56,6 +60,7 @@ public class Controller implements Initializable {
     }
 
     public void printGame(Config config, Board board) {
+        this.config = config;
         this.centerCanvas.setHeight(config.height);
         this.centerCanvas.setWidth(config.width);
         yAxis.setLowerBound((100 * ((double) 1 / config.species.length)) - 10);
@@ -81,14 +86,6 @@ public class Controller implements Initializable {
         this.lineChart.getData().addAll(this.series.values());
 
         this.createCanvas(config, board, this.gc);
-
-        AnimationTimer animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                createCanvas(config, board, gc);
-            }
-        };
-        animationTimer.start();
     }
 
     public void startOrStop() {
@@ -103,6 +100,14 @@ public class Controller implements Initializable {
             this.iteration.incrementAndGet();
             return true;
         });
+        this.startTime = System.currentTimeMillis();
+        AnimationTimer animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                createCanvas(config, board, gc);
+            }
+        };
+        animationTimer.start();
     }
 
     private void createCanvas(Config config, Board board, GraphicsContext gc) {
@@ -131,7 +136,6 @@ public class Controller implements Initializable {
             double totalAmountOfFields = config.width * config.height;
             hashMap.forEach((s, integer) -> {
                 double speciesCount = hashMap.get(s);
-                System.out.println(tick);
                     this.series.get(s).getData().add(new Data<>(tick, speciesCount / totalAmountOfFields * 100));
                     hashMap.put(s, 0);
             });
