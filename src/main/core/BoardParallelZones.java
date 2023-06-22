@@ -77,6 +77,7 @@ public class BoardParallelZones extends Board {
                     Util.appendRowInCSV(config.getMetrics().getPath(),
                             config.getMetrics().getMetricsCsvFileName(), getData(config, estimatedTime));
                     System.out.println("Duration: " + estimatedTime + " Milliseconds");
+                    System.exit(0);
                 }
         );
         t.start();

@@ -13,3 +13,4 @@ time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
 137,sequential,1,100,100,300,80
 142,sequential,1,100,100,300,80
 130,sequential,1,100,100,300,80
+383,sequential,1,100,100,300,80

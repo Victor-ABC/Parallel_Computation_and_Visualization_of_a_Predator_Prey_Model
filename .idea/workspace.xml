@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/src/main/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Util.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
