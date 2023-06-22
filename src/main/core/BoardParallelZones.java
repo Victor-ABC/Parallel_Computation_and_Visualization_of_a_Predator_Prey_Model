@@ -44,7 +44,7 @@ public class BoardParallelZones extends Board {
         for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
                 @Override
-                public Boolean call() throws Exception {
+                public Boolean call() {
                     execute(this.number, callback);
                     return true;
                 }
