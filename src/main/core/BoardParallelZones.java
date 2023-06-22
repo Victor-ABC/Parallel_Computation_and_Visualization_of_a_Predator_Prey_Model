@@ -52,6 +52,7 @@ public class BoardParallelZones extends Board {
                 private int number;
 
                 public Callable<Boolean> init(int number) {
+                    this.number = number;
                     return this;
                 }
 
