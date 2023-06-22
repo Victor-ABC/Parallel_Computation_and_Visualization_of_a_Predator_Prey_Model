@@ -5,37 +5,37 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import main.core.config.SimulationConfig;
-import main.core.config.SpeciesContext;
+import main.core.config.Config;
+import main.core.config.Species;
 
 public class Board {
 
-    public SpeciesContext[][] speziesBoard;
+    public Species[][] speziesBoard;
 
-    public SimulationConfig simulationConfig;
+    public Config config;
 
     public final SplittableRandom randomSpeciesGenerator = new SplittableRandom();
-    private int overallProbability;
+    private final int overallProbability;
 
-    public Board(SimulationConfig simulationConfig) {
-        int count = simulationConfig.width * simulationConfig.height;
+    public Board(Config config) {
+        int count = config.width * config.height;
 
-        this.overallProbability = simulationConfig.probabilityOfReproduction
-                + simulationConfig.probabilityOfSelection
-                + simulationConfig.probabilityOfMovement;
+        this.overallProbability = config.probabilityOfReproduction
+                + config.probabilityOfSelection
+                + config.probabilityOfMovement;
 
         ArrayList<Integer> range = new ArrayList<>(IntStream.rangeClosed(0, count ).boxed().toList());
         Collections.shuffle(range);
-        List<Integer> filledFields = range.subList(0, (count / 100) * simulationConfig.filledFields);
+        List<Integer> filledFields = range.subList(0, (count / 100) * config.filledFieldsInPercent);
 
-        this.speziesBoard = new SpeciesContext[simulationConfig.width][simulationConfig.height];
-        this.simulationConfig = simulationConfig;
+        this.speziesBoard = new Species[config.width][config.height];
+        this.config = config;
 
 
             filledFields.forEach(integer -> {
-                var fieldWith = (integer - 1) / simulationConfig.height;
-                var fieldHeight = (integer - fieldWith * simulationConfig.width) % simulationConfig.height;
-                this.speziesBoard[fieldWith][fieldHeight] = this.chooseRandomSpecies(simulationConfig.species);
+                var fieldWith = (integer - 1) / config.height;
+                var fieldHeight = (integer - fieldWith * config.width) % config.height;
+                this.speziesBoard[fieldWith][fieldHeight] = this.chooseRandomSpecies(config.species);
             });
     }
 
@@ -43,30 +43,38 @@ public class Board {
         var random = new Random();
 
         new Thread(() -> {
-            for (int i = 0; i < this.simulationConfig.maxIterations; i++) {
-                System.out.println(i);
-                for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
-                        int randomColumn = random.nextInt(this.simulationConfig.width);
-                        int randomRow = random.nextInt(this.simulationConfig.height);
-                        Direction choosenDirection = Direction.randomLetter();
-
-                        this.action(randomColumn, randomRow, choosenDirection);
-                }
-
-                callback.apply(i);
-            }
+            //Start Time
+            long startTime = System.currentTimeMillis();
+            execute(callback, random);
+            //End Time
+            long estimatedTime = System.currentTimeMillis() - startTime;
+            System.out.println("Duration: " + estimatedTime + " Milliseconds");
         }).start();
+    }
+
+    private void execute(Function<Integer, Boolean> callback, Random random) {
+        for (int i = 0; i < this.config.maxIterations; i++) {
+            for (int index = 0; index < this.config.width * this.config.height; index++) {
+                    int randomColumn = random.nextInt(this.config.width);
+                    int randomRow = random.nextInt(this.config.height);
+                    Direction choosenDirection = Direction.randomLetter();
+
+                    this.action(randomColumn, randomRow, choosenDirection);
+            }
+
+            callback.apply(i);
+        }
     }
 
     public void action(int x, int y, Direction direction) {
         var randomValue = this.randomSpeciesGenerator.nextInt(this.overallProbability);
 
-        if (randomValue < simulationConfig.probabilityOfReproduction) {
+        if (randomValue < config.probabilityOfReproduction) {
             this.reproduction(x, y, direction);
             return;
         }
 
-        if (randomValue < simulationConfig.probabilityOfSelection + simulationConfig.probabilityOfReproduction) {
+        if (randomValue < config.probabilityOfSelection + config.probabilityOfReproduction) {
             this.selection(x, y, direction);
             return;
         }
@@ -75,7 +83,7 @@ public class Board {
     }
 
     public void reproduction(int x, int y, Direction choosenDirection) {
-        SpeciesContext cellSpeciesOnField = this.getSpeciesAtCell(x, y);
+        Species cellSpeciesOnField = this.getSpeciesAtCell(x, y);
 
         if (cellSpeciesOnField != null) {
             this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
@@ -95,14 +103,14 @@ public class Board {
     }
 
     public void selection(int x, int y, Direction choosenDirection) {
-        SpeciesContext cellSpeciesOnField = this.getSpeciesAtCell(x, y);
+        Species cellSpeciesOnField = this.getSpeciesAtCell(x, y);
 
         if (cellSpeciesOnField == null) {
             return;
         }
 
         this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
-            SpeciesContext otherSpeciesOnField = this.getSpeciesAtCell(xOther, yOther);
+            Species otherSpeciesOnField = this.getSpeciesAtCell(xOther, yOther);
 
             if (otherSpeciesOnField == null | otherSpeciesOnField == cellSpeciesOnField) {
                 return Boolean.TRUE;
@@ -126,7 +134,7 @@ public class Board {
                 return Boolean.TRUE;
             }
 
-            SpeciesContext content = this.speziesBoard[xOther][yOther];
+            Species content = this.speziesBoard[xOther][yOther];
             this.speziesBoard[xOther][yOther] = this.speziesBoard[x][y];
             this.speziesBoard[x][y] = content;
             return Boolean.TRUE;
@@ -136,27 +144,27 @@ public class Board {
     public boolean executeActionAt(int x, int y, Direction direction, BiFunction<Integer, Integer, Boolean> callback) {
         switch (direction) {
             case RIGHT -> {
-                return callback.apply((x + 1) % this.simulationConfig.width, y);
+                return callback.apply((x + 1) % this.config.width, y);
             }
             case LEFT -> {
-                return callback.apply((x - 1 + this.simulationConfig.width) % this.simulationConfig.width , y);
+                return callback.apply((x - 1 + this.config.width) % this.config.width , y);
             }
             case TOP -> {
-                return callback.apply(x, (y - 1 + this.simulationConfig.height) % this.simulationConfig.height);
+                return callback.apply(x, (y - 1 + this.config.height) % this.config.height);
             }
             case DOWN -> {
-                return callback.apply(x, (y + 1 + this.simulationConfig.height) % this.simulationConfig.height);
+                return callback.apply(x, (y + 1 + this.config.height) % this.config.height);
             }
             default -> throw new IllegalArgumentException();
         }
     }
 
-    public SpeciesContext chooseRandomSpecies(SpeciesContext[] speciesContexts) {
-        int rand = this.randomSpeciesGenerator.nextInt(speciesContexts.length);
-        return speciesContexts[rand];
+    public Species chooseRandomSpecies(Species[] species) {
+        int rand = this.randomSpeciesGenerator.nextInt(species.length);
+        return species[rand];
     }
 
-    public SpeciesContext getSpeciesAtCell(int xAches, int yAches) {
+    public Species getSpeciesAtCell(int xAches, int yAches) {
         return this.speziesBoard[xAches][yAches];
     }
 }

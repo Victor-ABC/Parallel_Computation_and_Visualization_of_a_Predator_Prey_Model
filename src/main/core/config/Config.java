@@ -5,17 +5,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class SimulationConfig {
+public class Config {
 
+    public String mode;
+    public int numberOfThreads;
     public int width;
     public int height;
     public int maxIterations;
     public long seed;
-    public int filledFields;
+    public int filledFieldsInPercent;
 
     public int probabilityOfReproduction;
     public int probabilityOfSelection;
     public int probabilityOfMovement;
 
-    public SpeciesContext[] species;
+    public Species[] species;
 }

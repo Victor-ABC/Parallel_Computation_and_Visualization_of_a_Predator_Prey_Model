@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/Layout/view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Layout/view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Layout/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Layout/Controller.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +41,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/java/javafx-sdk-20/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
@@ -79,7 +79,7 @@
       <module name="pvr_projekt" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="test.*" />
+          <option name="PATTERN" value="test.BoardTest" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -94,7 +94,7 @@
       <module name="pvr_projekt" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="test.*" />
+          <option name="PATTERN" value="test.BoardTest" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -110,7 +110,7 @@
       <module name="pvr_projekt" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="test.*" />
+          <option name="PATTERN" value="test.BoardTest" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -170,6 +170,8 @@
       <updated>1681380850329</updated>
       <workItem from="1681915846302" duration="211000" />
       <workItem from="1681916069776" duration="6601000" />
+      <workItem from="1687263318165" duration="576000" />
+      <workItem from="1687421595567" duration="1855000" />
     </task>
     <servers />
   </component>
@@ -186,6 +188,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

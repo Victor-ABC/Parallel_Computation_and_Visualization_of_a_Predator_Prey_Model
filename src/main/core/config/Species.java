@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class SpeciesContext {
+public class Species {
 
     public String name;
     public String color;
     private HashSet<String> kills;
 
-    public boolean isEating(SpeciesContext speciesContext) {
-        return this.kills.contains(speciesContext.name);
+    public boolean isEating(Species species) {
+        return this.kills.contains(species.name);
     }
 }

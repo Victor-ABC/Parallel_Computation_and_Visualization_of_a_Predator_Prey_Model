@@ -1,6 +1,12 @@
 package main.core;
 
-import main.core.config.SimulationConfig;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import main.core.config.Config;
 
 import java.util.SplittableRandom;
 import java.util.concurrent.ExecutorService;
@@ -12,51 +18,74 @@ public class BoardParallelZones extends Board {
 
     public ReentrantLock[][] lockmap;
 
-    int threadCount = 4;
-
     ExecutorService pool;
 
-    public BoardParallelZones(SimulationConfig simulationConfig) {
-        super(simulationConfig);
+    public BoardParallelZones(Config config) {
+        super(config);
 
-        this.lockmap = new ReentrantLock[simulationConfig.width][simulationConfig.height];
+        this.lockmap = new ReentrantLock[config.width][config.height];
 
-        for (int row = 0; row < simulationConfig.width; row++) {
-            for (int col = 0; col < simulationConfig.height; col++) {
+        for (int row = 0; row < config.width; row++) {
+            for (int col = 0; col < config.height; col++) {
                 this.lockmap[row][col] = new ReentrantLock();
             }
         }
 
-        pool = Executors.newFixedThreadPool(this.threadCount);
+        pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
     @Override
     public void run(Function<Integer, Boolean> callback) {
-        for (int threadIncrement = 1; threadIncrement <= this.threadCount; threadIncrement++) {
-            this.pool.execute(new Runnable() {
+        //Start Time
+        long startTime = System.currentTimeMillis();
+        Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
+        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
+            Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() {
+                    execute(this.number, callback);
+                    return true;
+                }
+
                 private int number;
 
-                public Runnable init(int number) {
+                public Callable<Boolean> init(int number) {
                     this.number = number;
                     return this;
                 }
 
-                @Override
-                public void run() {
-                    execute(this.number, callback);
-                }
             }.init(threadIncrement));
+            futureMap.put(threadIncrement, future);
         }
+        //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
+        //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
+        //       Anwendung "freezed" komplett
+        Thread t = new Thread(
+                () -> {
+                    for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
+                        try {
+                            entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
+                            //bis der Thread fertig ist
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //End Time
+                    long estimatedTime = System.currentTimeMillis() - startTime;
+                    System.out.println("Duration: " + estimatedTime + " Milliseconds");
+                }
+        );
+        t.start();
     }
 
-    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
+    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
         var random = new SplittableRandom();
 
-        var threadHeight = this.simulationConfig.height / this.threadCount;
+        var threadHeight = this.config.height / this.config.numberOfThreads;
 
-        for (int i = 0; i <= this.simulationConfig.maxIterations / this.threadCount; i++) {
-            for (int index = 0; index < this.simulationConfig.width * this.simulationConfig.height; index++) {
-                int randomColumn = random.nextInt(this.simulationConfig.width);
+        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
+            for (int index = 0; index < this.config.width * this.config.height; index++) {
+                int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
                 Direction choosenDirection = Direction.randomLetter();
 
@@ -89,13 +118,13 @@ public class BoardParallelZones extends Board {
             return Boolean.TRUE;
         }
 
-        if(x == this.simulationConfig.width - 1 || y == this.simulationConfig.height - 1) {
+        if(x == this.config.width - 1 || y == this.config.height - 1) {
             return Boolean.TRUE;
         }
 
-        var threadHeight = this.simulationConfig.height / this.threadCount;
+        var threadHeight = this.config.height / this.config.numberOfThreads;
 
-        return y % threadHeight == 0 || y % threadHeight == this.simulationConfig.height - 1;
+        return y % threadHeight == 0 || y % threadHeight == this.config.height - 1;
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
