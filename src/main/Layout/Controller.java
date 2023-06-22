@@ -1,6 +1,7 @@
 package main.Layout;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.InvalidationListener;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.*;
@@ -38,7 +39,7 @@ public class Controller implements Initializable {
 
     private GraphicsContext gc;
 
-    private Boolean isStarted = false;
+    private volatile Boolean isStarted = false;
 
     private Integer tick = 0;
 
@@ -51,14 +52,14 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         xAxis.setLabel("Zeitpunkt");
-        yAxis.setLabel("Anzahl");
+        yAxis.setLabel("Verteilung der Spezies");
     }
 
     public void printGame(Config config, Board board) {
         this.centerCanvas.setHeight(config.height);
         this.centerCanvas.setWidth(config.width);
-        yAxis.setLowerBound((double) (config.height * config.width) / (config.species.length + 1 ));
-        yAxis.setUpperBound((double) (config.height * config.width) / (config.species.length));
+        yAxis.setLowerBound((100 * ((double) 1 / config.species.length)) - 10);
+        yAxis.setUpperBound(100 * ((double) 1 / config.species.length));
         yAxis.setTickUnit((double) ((config.height * config.width) / (config.species.length)) / 2);
 
         this.speciesOnField = new Species[config.width][config.height];
@@ -92,6 +93,7 @@ public class Controller implements Initializable {
 
     public void startOrStop() {
         if(this.isStarted) {
+            this.isStarted = false;
             return;
         }
 
@@ -126,11 +128,13 @@ public class Controller implements Initializable {
             }
         }
         if (this.isStarted) {
+            double totalAmountOfFields = config.width * config.height;
             hashMap.forEach((s, integer) -> {
-                this.series.get(s).getData().add(new Data<>(tick, hashMap.get(s)));
-                hashMap.put(s, 0);
+                double speciesCount = hashMap.get(s);
+                System.out.println(tick);
+                    this.series.get(s).getData().add(new Data<>(tick, speciesCount / totalAmountOfFields * 100));
+                    hashMap.put(s, 0);
             });
-
             tick++;
         }
     }

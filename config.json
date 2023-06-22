@@ -1,8 +1,8 @@
 {
   "mode" : "parallel_with_zones",
   "numberOfThreads" : 4,
-  "width": 1000,
-  "height": 1000,
+  "width": 100,
+  "height": 100,
   "maxIterations": 100,
   "filledFieldsInPercent": 80,
   "probabilityOfReproduction": 1,
