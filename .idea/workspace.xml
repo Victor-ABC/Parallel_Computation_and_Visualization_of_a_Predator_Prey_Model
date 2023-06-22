@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="pvr_projekt:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3abb55b1-7742-4cf1-92f0-6b0eca2f698d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/core/BoardParallelZones.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrics/first_try_22_06_23.csv" beforeDir="false" afterPath="$PROJECT_DIR$/metrics/first_try_22_06_23.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,11 +53,11 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="create.test.in.the.same.root" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../jar/pvr_projekt.jar" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.2689655" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.29885057" />
     <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
   </component>
   <component name="RecentsManager">
@@ -73,7 +76,7 @@
       <recent name="simulation.core" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JAR Application.hello_world_jar">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="17" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -147,6 +150,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="hello_world_jar" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/../jar/pvr_projekt.jar" />
+      <option name="VM_PARAMETERS" value="--module-path C:\Users\User\java\javafx-sdk-20\lib --add-modules javafx.controls,javafx.fxml" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\User\pvr\projekt" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="pvr_projekt:jar" />
+        </option>
+      </method>
+    </configuration>
     <configuration name="Unnamed" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
         <option name="myGeneralSettings" />
@@ -172,11 +186,12 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
+      <item itemvalue="JAR Application.hello_world_jar" />
       <item itemvalue="JUnit.BoardTest" />
       <item itemvalue="JUnit.BoardTest.shouldWork" />
       <item itemvalue="JUnit.BoardTest.shouldWork_80PercentFullGameField" />
-      <item itemvalue="Maven.Unnamed" />
       <item itemvalue="JUnit.BoardTest.a" />
+      <item itemvalue="Maven.Unnamed" />
     </list>
     <recent_temporary>
       <list>
