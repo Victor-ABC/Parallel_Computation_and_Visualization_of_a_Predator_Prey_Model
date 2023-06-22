@@ -136,7 +136,7 @@ public class Controller implements Initializable {
             double totalAmountOfFields = config.width * config.height;
             hashMap.forEach((s, integer) -> {
                 double speciesCount = hashMap.get(s);
-                    this.series.get(s).getData().add(new Data<>(tick, speciesCount / totalAmountOfFields * 100));
+                    this.series.get(s).getData().add(new Data<>(System.currentTimeMillis() - this.startTime, speciesCount / totalAmountOfFields * 100));
                     hashMap.put(s, 0);
             });
             tick++;

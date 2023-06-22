@@ -1,10 +1,15 @@
 package main.core;
 
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-
 import main.core.config.Config;
 import main.core.config.Species;
 
@@ -43,25 +48,44 @@ public class Board {
         var random = new Random();
 
         new Thread(() -> {
+            Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+                    config.getMetrics().getUseFields());
             //Start Time
             long startTime = System.currentTimeMillis();
             execute(callback, random);
             //End Time
             long estimatedTime = System.currentTimeMillis() - startTime;
+            Util.appendRowInCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(), getData(estimatedTime));
             System.out.println("Duration: " + estimatedTime + " Milliseconds");
         }).start();
+    }
+
+    private List<String> getData(long estimatedTime) {
+        List<String> result = new ArrayList<>();
+        Class<?> myClass = config.getClass();
+        result.add(Util.convertToString(estimatedTime));//Always: Time first
+        for (String header : config.getMetrics().useFields) {
+            String methodName = "get" + Util.uppercaseFirstChar(header);
+            try {
+                Method method = myClass.getMethod(methodName);//Reflection
+                String value = Util.convertToString(method.invoke(config));
+                result.add(value);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
     private void execute(Function<Integer, Boolean> callback, Random random) {
         for (int i = 0; i < this.config.maxIterations; i++) {
             for (int index = 0; index < this.config.width * this.config.height; index++) {
-                    int randomColumn = random.nextInt(this.config.width);
-                    int randomRow = random.nextInt(this.config.height);
-                    Direction choosenDirection = Direction.randomLetter();
+                int randomColumn = random.nextInt(this.config.width);
+                int randomRow = random.nextInt(this.config.height);
+                Direction choosenDirection = Direction.randomLetter();
 
-                    this.action(randomColumn, randomRow, choosenDirection);
+                this.action(randomColumn, randomRow, choosenDirection);
             }
-
             callback.apply(i);
         }
     }

@@ -1,0 +1,104 @@
+package main.core;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+public class Util {
+
+    /**
+     * Creates a CSV-File an fills the headers.
+     * @param folderPath = "C:/path/to/folder/"; // Specify the folder path where the CSV file will be created
+     * @param fileName "example.csv"; // Specify the name of the CSV file
+     * @param headers String[] headers = {"Name", "Age", "City"};
+     */
+    public static void createCSV(String folderPath, String fileName, List<String> headers) {
+        fileName += prittyFormatDate(System.currentTimeMillis()) + ".csv";
+        if (!Files.exists(Paths.get(folderPath + fileName))) {//checks if file exists
+            try {
+                FileWriter fileWriter = new FileWriter(folderPath + fileName);
+                PrintWriter printWriter = new PrintWriter(fileWriter);
+
+                printWriter.print("time");//Always: Time
+                printWriter.print(",");
+                // Write column headers
+                for (int i = 0; i < headers.size(); i++) {
+                    printWriter.print(headers.get(i));
+                    if (i != headers.size() - 1) {
+                        printWriter.print(",");
+                    }
+                }
+                printWriter.println();
+
+                printWriter.close();
+                System.out.println("CSV file created successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("(CSV file already exists)");
+        }
+    }
+
+    /**
+     *         // Data rows
+     *         String[][] data = {
+     *                 {"John Doe", "30", "New York"},
+     *                 {"Jane Smith", "25", "London"},
+     *                 {"Mike Johnson", "35", "Paris"}
+     *       };
+     * @param folderPath = path to csv
+     * @param fileName = file name (name + "_date.csv")
+     * @param data = a new row/new rows
+     */
+    public static void appendRowInCSV(String folderPath, String fileName, List<String> data) {
+        fileName += prittyFormatDate(System.currentTimeMillis()) + ".csv";
+        try {
+            FileWriter fileWriter = new FileWriter(folderPath + fileName, true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            // Write data rows
+            for (int i = 0; i < data.size(); i++) {
+                printWriter.print(data.get(i));
+                if (i != data.size() - 1) {
+                    printWriter.print(",");
+                }
+            }
+            printWriter.println();
+            printWriter.close();
+            System.out.println("CSV file created successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String uppercaseFirstChar(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        char firstChar = Character.toUpperCase(input.charAt(0));
+        String remainingChars = input.substring(1);
+
+        return firstChar + remainingChars;
+    }
+
+    public static String convertToString(Object obj) {
+        if (obj instanceof String) {
+            return (String) obj;
+        } else {
+            return String.valueOf(obj);
+        }
+    }
+
+    static String prittyFormatDate(long timeMillis) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("_dd_MM_yy");
+        return dateFormat.format(new Date(timeMillis));
+    }
+
+}

@@ -1,9 +1,21 @@
 {
-  "mode" : "sequential",
-  "numberOfThreads" : 1,
+  "metrics": {
+    "metricsCsvFileName": "first_try",
+    "path" : "./metrics/",
+    "useFields": [
+      "mode",
+      "numberOfThreads",
+      "width",
+      "height",
+      "maxIterations",
+      "filledFieldsInPercent"
+    ]
+  },
+  "mode": "sequential",
+  "numberOfThreads": 1,
   "width": 100,
   "height": 100,
-  "maxIterations": 100,
+  "maxIterations": 300,
   "filledFieldsInPercent": 80,
   "probabilityOfReproduction": 1,
   "probabilityOfSelection": 1,
