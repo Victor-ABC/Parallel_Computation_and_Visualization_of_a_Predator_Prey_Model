@@ -11,7 +11,7 @@
       "filledFieldsInPercent"
     ]
   },
-  "mode": "parallel_with_zones",
+  "mode": "parallel_without_zones",
   "numberOfThreads": 4,
   "width": 2000,
   "height": 2000,

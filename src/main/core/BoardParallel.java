@@ -49,12 +49,13 @@ public class BoardParallel extends Board {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
+        for (int i = 0; i <= this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
 
                 @Override
                 public Boolean call() throws Exception {
                     execute(callback);
+                    callback.apply(1);
                     return true;
                 }
 
@@ -63,7 +64,7 @@ public class BoardParallel extends Board {
                 }
 
             }.init());
-            futureMap.put(threadIncrement, future);
+            futureMap.put(i, future);
         }
         //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
         //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
@@ -91,23 +92,18 @@ public class BoardParallel extends Board {
 
     public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
-
-        for (int i = 0; i < this.config.maxIterations / this.config.numberOfThreads; i++) {
-            for (int index = 0; index < this.config.width * this.config.height; index++) {
-                int randomColumn = random.nextInt(this.config.width);
-                int randomRow = random.nextInt(this.config.height);
-                Direction choosenDirection = Direction.randomLetter();
-                this.getLock(randomColumn, randomRow, choosenDirection);
-                try {
-                    this.action(randomColumn, randomRow, choosenDirection);
-                } finally {
-                    this.unlock(randomColumn, randomRow, choosenDirection);
-                }
-
+        for (int index = 0; index < this.config.width * this.config.height; index++) {
+            int randomColumn = random.nextInt(this.config.width);
+            int randomRow = random.nextInt(this.config.height);
+            Direction choosenDirection = Direction.randomLetter();
+            this.getLock(randomColumn, randomRow, choosenDirection);
+            try {
+                this.action(randomColumn, randomRow, choosenDirection);
+            } finally {
+                this.unlock(randomColumn, randomRow, choosenDirection);
             }
-
-            callback.apply(i);
         }
+
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {

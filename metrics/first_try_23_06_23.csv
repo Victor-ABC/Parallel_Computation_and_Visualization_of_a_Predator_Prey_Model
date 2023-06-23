@@ -2,3 +2,4 @@ time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
 4288,parallel_with_zones,4,2000,2000,10,80
 2006,parallel_with_zones,4,2000,2000,10,80
 4817,parallel_with_zones,4,2000,2000,10,80
+24062,parallel_without_zones,4,2000,2000,10,80
