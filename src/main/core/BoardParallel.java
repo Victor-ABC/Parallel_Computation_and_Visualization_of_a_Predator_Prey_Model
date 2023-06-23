@@ -49,7 +49,7 @@ public class BoardParallel extends Board {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int i = 0; i <= this.config.maxIterations; i++) {
+        for (int i = 0; i < this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
 
                 @Override
