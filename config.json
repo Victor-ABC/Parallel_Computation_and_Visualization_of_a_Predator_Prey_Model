@@ -11,11 +11,11 @@
       "filledFieldsInPercent"
     ]
   },
-  "mode": "sequential",
-  "numberOfThreads": 1,
-  "width": 400,
-  "height": 400,
-  "maxIterations": 400,
+  "mode": "parallel_with_zones",
+  "numberOfThreads": 4,
+  "width": 2000,
+  "height": 2000,
+  "maxIterations": 10,
   "filledFieldsInPercent": 80,
   "probabilityOfReproduction": 1,
   "probabilityOfSelection": 1,

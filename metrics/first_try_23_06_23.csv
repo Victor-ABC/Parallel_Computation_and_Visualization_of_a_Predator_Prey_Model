@@ -1,3 +1,4 @@
 time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
-403,sequential,1,100,100,400,80
-3623,sequential,1,400,400,400,80
+4288,parallel_with_zones,4,2000,2000,10,80
+2006,parallel_with_zones,4,2000,2000,10,80
+4817,parallel_with_zones,4,2000,2000,10,80

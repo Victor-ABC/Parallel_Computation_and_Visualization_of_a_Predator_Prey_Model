@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SplittableRandom;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -41,11 +42,12 @@ public class BoardParallelZones extends Board {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
+        for (int i = 0; i <= this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
                     execute(this.number, callback);
+                    callback.apply(1);
                     return true;
                 }
 
@@ -56,8 +58,8 @@ public class BoardParallelZones extends Board {
                     return this;
                 }
 
-            }.init(threadIncrement));
-            futureMap.put(threadIncrement, future);
+            }.init((i % this.config.numberOfThreads) + 1));
+            futureMap.put(i, future);
         }
         //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
         //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
@@ -83,30 +85,42 @@ public class BoardParallelZones extends Board {
         t.start();
     }
 
-    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {
+    public void execute(int threadIncrement, Function<Integer, Boolean> callback) {;
         var random = new SplittableRandom();
 
         var threadHeight = this.config.height / this.config.numberOfThreads;
 
-        for (int i = 0; i < this.config.maxIterations / this.config.numberOfThreads; i++) {
-            for (int index = 0; index < this.config.width * this.config.height; index++) {
-                int randomColumn = random.nextInt(this.config.width);
-                int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
-                Direction choosenDirection = Direction.randomLetter();
+        for (int index = 0; index < this.config.width * this.config.height; index++) {
+            int randomColumn = random.nextInt(this.config.width);
+            int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);
+            Direction choosenDirection = Direction.randomLetter();
 
-                if(isCombinationInCriticalZone(randomColumn, randomRow, choosenDirection)) {
-                    this.getLock(randomColumn, randomRow, choosenDirection);
-                    try {
-                        this.action(randomColumn, randomRow, choosenDirection);
-                    } finally {
-                        this.unlock(randomColumn, randomRow, choosenDirection);
-                    }
-                } else {
+            if(isCombinationInCriticalZone(randomColumn, randomRow, choosenDirection)) {
+                this.lockmap[randomColumn][randomRow].lock();
+
+                this.executeActionAt(randomColumn, randomRow, choosenDirection, (xOther, yOther) -> {
+                    this.lockmap[xOther][yOther].lock();
+
+                    return Boolean.TRUE;
+                });
+
+                try {
                     this.action(randomColumn, randomRow, choosenDirection);
-                }
-            }
+                } finally {
 
-            callback.apply(i);
+
+                    this.lockmap[randomColumn][randomRow].unlock();
+
+                    this.executeActionAt(randomColumn, randomRow, choosenDirection, (xOther, yOther) -> {
+                        this.lockmap[xOther][yOther].unlock();
+
+                        return Boolean.TRUE;
+                    });
+
+                }
+            } else {
+                this.action(randomColumn, randomRow, choosenDirection);
+            }
         }
     }
 
@@ -133,7 +147,7 @@ public class BoardParallelZones extends Board {
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
-         this.lockmap[x][y].lock();
+        this.lockmap[x][y].lock();
 
         this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
             this.lockmap[xOther][yOther].lock();
