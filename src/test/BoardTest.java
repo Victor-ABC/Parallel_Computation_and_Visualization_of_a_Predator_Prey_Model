@@ -79,11 +79,9 @@ class BoardTest {
 
     @Test
     void a() {
-        long currentTimeMillis = System.currentTimeMillis();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("_dd_MM_yy");
-        String formattedDateTime = dateFormat.format(new Date(currentTimeMillis));
-
-        System.out.println("Formatted date: " + formattedDateTime);
+        int iterations = 16;
+        int numberOfThreads = 8;
+        System.out.println(iterations/numberOfThreads);
     }
 
     @Test

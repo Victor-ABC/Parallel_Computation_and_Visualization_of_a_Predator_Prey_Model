@@ -92,7 +92,7 @@ public class BoardParallel extends Board {
     public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
 
-        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
+        for (int i = 0; i < this.config.maxIterations / this.config.numberOfThreads; i++) {
             for (int index = 0; index < this.config.width * this.config.height; index++) {
                 int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(this.config.height);

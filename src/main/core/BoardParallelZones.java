@@ -88,7 +88,7 @@ public class BoardParallelZones extends Board {
 
         var threadHeight = this.config.height / this.config.numberOfThreads;
 
-        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
+        for (int i = 0; i < this.config.maxIterations / this.config.numberOfThreads; i++) {
             for (int index = 0; index < this.config.width * this.config.height; index++) {
                 int randomColumn = random.nextInt(this.config.width);
                 int randomRow = random.nextInt(threadHeight * (threadIncrement - 1), threadHeight * threadIncrement);

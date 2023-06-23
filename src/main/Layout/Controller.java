@@ -86,6 +86,7 @@ public class Controller implements Initializable {
         this.lineChart.getData().addAll(this.series.values());
 
         this.createCanvas(config, board, this.gc);
+        startOrStop();
     }
 
     public void startOrStop() {
