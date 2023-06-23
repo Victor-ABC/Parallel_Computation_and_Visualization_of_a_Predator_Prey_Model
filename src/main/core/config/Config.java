@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Config {
 
+    public Metrics metrics;
     public String mode;
     public int numberOfThreads;
     public int width;

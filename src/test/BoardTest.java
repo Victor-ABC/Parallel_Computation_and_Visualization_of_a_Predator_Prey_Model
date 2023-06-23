@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import main.core.Board;
@@ -73,6 +75,13 @@ class BoardTest {
                 assertNotNull(board.getSpeciesAtCell(row, col));
             }
         }
+    }
+
+    @Test
+    void a() {
+        int iterations = 16;
+        int numberOfThreads = 8;
+        System.out.println(iterations/numberOfThreads);
     }
 
     @Test

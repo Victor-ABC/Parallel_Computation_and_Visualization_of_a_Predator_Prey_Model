@@ -1,18 +1,18 @@
 package main.core;
 
+import static main.core.Util.getData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import main.core.config.Config;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+import main.core.config.Config;
 
 public class BoardParallel extends Board {
 
@@ -44,15 +44,18 @@ public class BoardParallel extends Board {
     3. End Time -> Differenz
      */
     public void run(Function<Integer, Boolean> callback) {
+        Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+                config.getMetrics().getUseFields());
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int threadIncrement = 1; threadIncrement <= this.config.numberOfThreads; threadIncrement++) {
+        for (int i = 0; i < this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
 
                 @Override
                 public Boolean call() throws Exception {
                     execute(callback);
+                    callback.apply(1);
                     return true;
                 }
 
@@ -61,7 +64,7 @@ public class BoardParallel extends Board {
                 }
 
             }.init());
-            futureMap.put(threadIncrement, future);
+            futureMap.put(i, future);
         }
         //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
         //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
@@ -78,7 +81,10 @@ public class BoardParallel extends Board {
                     }
                     //End Time
                     long estimatedTime = System.currentTimeMillis() - startTime;
+                    Util.appendRowInCSV(config.getMetrics().getPath(),
+                            config.getMetrics().getMetricsCsvFileName(), getData(config, estimatedTime));
                     System.out.println("Duration: " + estimatedTime + " Milliseconds");
+                    System.exit(0);
                 }
         );
         t.start();
@@ -86,23 +92,18 @@ public class BoardParallel extends Board {
 
     public void execute(Function<Integer, Boolean> callback) {
         var random = ThreadLocalRandom.current();
-
-        for (int i = 0; i <= this.config.maxIterations / this.config.numberOfThreads; i++) {
-            for (int index = 0; index < this.config.width * this.config.height; index++) {
-                int randomColumn = random.nextInt(this.config.width);
-                int randomRow = random.nextInt(this.config.height);
-                Direction choosenDirection = Direction.randomLetter();
-                this.getLock(randomColumn, randomRow, choosenDirection);
-                try {
-                    this.action(randomColumn, randomRow, choosenDirection);
-                } finally {
-                    this.unlock(randomColumn, randomRow, choosenDirection);
-                }
-
+        for (int index = 0; index < this.config.width * this.config.height; index++) {
+            int randomColumn = random.nextInt(this.config.width);
+            int randomRow = random.nextInt(this.config.height);
+            Direction choosenDirection = Direction.randomLetter();
+            this.getLock(randomColumn, randomRow, choosenDirection);
+            try {
+                this.action(randomColumn, randomRow, choosenDirection);
+            } finally {
+                this.unlock(randomColumn, randomRow, choosenDirection);
             }
-
-            callback.apply(i);
         }
+
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
