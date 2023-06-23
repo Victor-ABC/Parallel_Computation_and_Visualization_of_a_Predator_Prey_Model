@@ -91,10 +91,7 @@ public class BoardParallelZones extends Board {
         for (int index = 0; index < this.config.width * this.config.height; index++) {
             int randomColumn = random.nextInt(this.config.width);
             int randomRow = random.nextInt(threadHeight * (threadId - 1), threadHeight * threadId);
-            System.out.println(threadId);
-            System.out.println(randomRow);
             Direction choosenDirection = Direction.randomLetter();
-
             if(isCombinationInCriticalZone(randomColumn, randomRow, choosenDirection)) {
                 this.getLock(randomColumn, randomRow, choosenDirection);
                 try {
