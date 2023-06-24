@@ -15,6 +15,7 @@ public class Config {
     public int maxIterations;
     public long seed;
     public int filledFieldsInPercent;
+    public boolean isInitialOrderRandom;
 
     public int probabilityOfReproduction;
     public int probabilityOfSelection;
