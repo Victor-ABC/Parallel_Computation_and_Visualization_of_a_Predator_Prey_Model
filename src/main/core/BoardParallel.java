@@ -59,14 +59,27 @@ public class BoardParallel extends Board {
         pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
-    @Override
-    /*
-    Mithilfe der map bekommen wir eine Referenz auf das Future des Executors/Tasks.
-    So kann man messen, wie lange die gesamte run-Methode dauert.
-    1. Start Time
-    2. run() -> aufgabe ausführen + main-thread wartet blockierend, bis sub-threads fertig sind
-    3. End Time -> Differenz
+    /**
+     * Die Methode "run" startet die parallele Ausführung der Simulation.
+     * Zunächst werden CSV-Dateien für die Metriken erstellt und die Startzeit erfasst.
+     *
+     * Dann wird eine Map "futureMap" erstellt, um die zukünftigen Ergebnisse der Threads zu speichern.
+     * In einer Schleife werden für jede Iteration der Simulation Callable-Objekte erzeugt und an den
+     * ExecutorService übergeben.
+     * Jedes Callable-Objekt führt die Methode "execute(callback)" aus und ruft anschließend die
+     * callback-Funktion auf. Das Ergebnis des Callables wird in der futureMap gespeichert.
+     *
+     * Um die Threads zu synchronisieren, wird ein separater Thread erstellt, der blockierend auf die
+     * Beendigung der anderen Threads wartet. Dies ist notwendig, um ein Blockieren des Hauptthreads zu
+     * verhindern und die Benutzeroberfläche (UI) reaktiv zu halten. In diesem Thread werden die
+     * Ergebnisse der Threads abgerufen und die Endzeit erfasst. Abschließend werden die Metriken
+     * in die CSV-Datei geschrieben, die Dauer ausgegeben und das Programm beendet.
+     *
+     * Die Methode "run" koordiniert also die parallele Ausführung der Simulation und sorgt dafür,
+     * dass alle Threads ihre Aufgaben abschließen, bevor das Programm endet.
+     * @param callback misst, wie viele Iterationen bereits erfolgt sind.
      */
+    @Override
     public void run(Function<Integer, Boolean> callback) {
         Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
                 config.getMetrics().getUseFields());
@@ -76,8 +89,8 @@ public class BoardParallel extends Board {
         for (int i = 0; i < this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
                 @Override
-                public Boolean call() throws Exception {
-                    execute(callback);
+                public Boolean call() {
+                    execute();
                     callback.apply(1);
                     return true;
                 }
@@ -97,7 +110,7 @@ public class BoardParallel extends Board {
                     for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
                         try {
                             entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
-                            //bis der Thread fertig ist
+                            //bis alle Tasks im Thread-Pool fertig sind.
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -113,7 +126,23 @@ public class BoardParallel extends Board {
         t.start();
     }
 
-    public void execute(Function<Integer, Boolean> callback) {
+    /**
+     * In einer Schleife wird für jede Zelle des Spielfelds eine zufällige Spalte, eine zufällige Reihe
+     * und eine zufällige Richtung ausgewählt.
+     * Dabei wird zuerst das feld (x + y) und das nachbarfeld "choosenDirection" blockiert
+     *
+     * Dann wird die Aktion für die ausgewählte Zelle, Spalte, Reihe und Richtung ausgeführt.
+     *
+     * Unabhängig vom Ergebnis wird schließlich das Schloss für die Zellen wieder freigegeben.
+     * getLock() -> ist Atomar/Thread-save, da sonst Deadlocks auftreten könnten
+     * Beispiel:
+     * Zeitpunkt 1: T1 lockt (x=1, y=1)
+     * Zeitpunkt 2: T2 lockt (x=1, y=2)
+     * Zeitpunkt 3: T1 will nachbar locken (x=1, y=2) (geht nicht)
+     * Zeitpunkt 4: T2 will nachbar locken (x=1, y=1) (geht nicht)
+     * Ergebnis: T1 und T2 blockieren jeweils das, was der andere Thread möchte!
+     */
+    public void execute() {
         var random = ThreadLocalRandom.current();
         for (int index = 0; index < this.config.width * this.config.height; index++) {
             int randomColumn = random.nextInt(this.config.width);
@@ -126,7 +155,6 @@ public class BoardParallel extends Board {
                 this.unlock(randomColumn, randomRow, choosenDirection);
             }
         }
-
     }
 
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
