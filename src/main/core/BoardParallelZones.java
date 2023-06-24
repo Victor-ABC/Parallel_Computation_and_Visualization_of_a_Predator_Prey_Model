@@ -62,16 +62,13 @@ public class BoardParallelZones extends BoardParallel {
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
         for (int i = 0; i < this.config.maxIterations; i++) {
-            for (int index = 0; index < this.config.width * this.config.height; index++) {
                 Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
                     private int iteration;
 
                     @Override
                     public Boolean call() {
                         execute();
-                        if (this.iteration == 0) { //for counting iterations
-                            callback.apply(1);
-                        }
+                        callback.apply(1);
                         return true;
                     }
 
@@ -81,8 +78,7 @@ public class BoardParallelZones extends BoardParallel {
                     }
 
                 }.init(i));
-                futureMap.put(i * index, future);
-            }
+                futureMap.put(i, future);
         }
         //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
         //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
@@ -111,18 +107,20 @@ public class BoardParallelZones extends BoardParallel {
     public void execute() {
         int threadId = (int) (Thread.currentThread().getId() % this.config.numberOfThreads) + 1;
         var threadHeight = this.config.height / this.config.numberOfThreads;
-        int randomColumn = random.nextInt(this.config.width);
-        int randomRow = random.nextInt(threadHeight * (threadId - 1), threadHeight * threadId);
-        Direction choosenDirection = Direction.randomLetter();
-        if (isCombinationInCriticalZone(randomColumn, randomRow, choosenDirection)) {
-            this.getLock(randomColumn, randomRow, choosenDirection);
-            try {
+        for (int index = 0; index < this.config.width * this.config.height; index++) {
+            int randomColumn = random.nextInt(this.config.width);
+            int randomRow = random.nextInt(threadHeight * (threadId - 1), threadHeight * threadId);
+            Direction choosenDirection = Direction.randomLetter();
+            if (isCombinationInCriticalZone(randomColumn, randomRow, choosenDirection)) {
+                this.getLock(randomColumn, randomRow, choosenDirection);
+                try {
+                    this.action(randomColumn, randomRow, choosenDirection);
+                } finally {
+                    this.unlock(randomColumn, randomRow, choosenDirection);
+                }
+            } else {
                 this.action(randomColumn, randomRow, choosenDirection);
-            } finally {
-                this.unlock(randomColumn, randomRow, choosenDirection);
             }
-        } else {
-            this.action(randomColumn, randomRow, choosenDirection);
         }
     }
 

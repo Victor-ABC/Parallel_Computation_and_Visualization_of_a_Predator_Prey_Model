@@ -20,3 +20,5 @@ time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
 36386,parallel_with_zones,5,200,200,1000,80
 3417,parallel_with_zones,20,200,200,100,80
 48743,parallel_without_zones,20,1000,1000,100,80
+7735,parallel_with_zones,20,1000,1000,100,80
+705,parallel_with_zones,3,1000,1000,4,80
