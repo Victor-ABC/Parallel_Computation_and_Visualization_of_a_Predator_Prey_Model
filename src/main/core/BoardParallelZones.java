@@ -7,10 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SplittableRandom;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import main.core.config.Config;
 
@@ -28,43 +25,33 @@ import main.core.config.Config;
  * 1 = Kritisch
  *
  * A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1)
- * A(1) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(1)
- * A(1) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(1)
- * A(1) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(1)
+ * A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0)
+ * A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0)
+ * A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0) A(0)
  * A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1) A(1)
  * B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1)
- * B(1) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(1)
- * B(1) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(1)
- * B(1) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(1)
+ * B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0)
+ * B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0)
+ * B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0) B(0)
  * B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1) B(1)
  * C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1)
- * C(1) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(1)
- * C(1) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(1)
- * C(1) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(1)
+ * C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0)
+ * C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0)
+ * C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0) C(0)
  * C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1) C(1)
  * D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1)
- * D(1) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(1)
- * D(1) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(1)
- * D(1) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(1)
+ * D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0)
+ * D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0)
+ * D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0) D(0)
  * D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1) D(1)
  */
-public class BoardParallelZones extends Board {
+public class BoardParallelZones extends BoardParallel {
 
-    public ReentrantLock[][] lockmap;
+
     SplittableRandom random = new SplittableRandom();
-    ExecutorService pool;
 
     public BoardParallelZones(Config config) {
         super(config);
-
-        this.lockmap = new ReentrantLock[config.width][config.height];
-
-        for (int row = 0; row < config.width; row++) {
-            for (int col = 0; col < config.height; col++) {
-                this.lockmap[row][col] = new ReentrantLock();
-            }
-        }
-        pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
     @Override
@@ -143,17 +130,10 @@ public class BoardParallelZones extends Board {
         if(isCriticalZone(x, y)) {
             return Boolean.TRUE;
         }
-
         return this.executeActionAt(x, y, choosenDirection, this::isCriticalZone);
     }
 
     private boolean isCriticalZone(int x, int y) {
-        if (x == 0 || y == 0) {
-            return Boolean.TRUE;
-        }
-        if (x == this.config.width - 1 || y == this.config.height - 1) {
-            return Boolean.TRUE;
-        }
         var threadHeight = this.config.height / this.config.numberOfThreads;
         //Bsp. threadHeight = 5 (0 - 4)
         // x=0 ist oben in Java 2D array, der höhe 5  z.B. String[5][10]
@@ -161,25 +141,5 @@ public class BoardParallelZones extends Board {
         boolean isTop = x % threadHeight == 0; //0 % 5 == 0
         boolean isBottom = x % threadHeight == threadHeight - 1; //4 % 5 = 4 = 5 - 1
         return isTop || isBottom;
-    }
-
-    public synchronized void getLock(int x, int y, Direction choosenDirection) {
-        this.lockmap[x][y].lock();
-
-        this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
-            this.lockmap[xOther][yOther].lock();
-
-            return Boolean.TRUE;
-        });
-    }
-
-    public void unlock(int x, int y, Direction choosenDirection) {
-        this.lockmap[x][y].unlock();
-
-        this.executeActionAt(x, y, choosenDirection, (xOther, yOther) -> {
-            this.lockmap[xOther][yOther].unlock();
-
-            return Boolean.TRUE;
-        });
     }
 }

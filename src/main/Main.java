@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import main.Layout.Controller;
 import main.core.Board;
-import main.core.BoardParallel;
+import main.core.BoardParallelFull;
 import main.core.BoardParallelZones;
 import main.core.config.Config;
 
@@ -43,7 +43,7 @@ public class Main extends Application {
     private Board getBoard() {
         return switch (config.mode) {
             case "sequential" -> new Board(config);
-            case "parallel_without_zones" -> new BoardParallel(config);
+            case "parallel_without_zones" -> new BoardParallelFull(config);
             case "parallel_with_zones" -> new BoardParallelZones(config);
             default -> throw new IllegalArgumentException("Board-Type is not supported!");
         };
