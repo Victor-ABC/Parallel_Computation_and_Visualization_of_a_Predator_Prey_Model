@@ -1,0 +1,2 @@
+time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
+27132,parallel_without_zones,4,1001,1001,51,80

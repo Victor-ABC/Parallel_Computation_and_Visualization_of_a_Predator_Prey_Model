@@ -17,6 +17,7 @@
   "height": 1001,
   "maxIterations": 51,
   "filledFieldsInPercent": 80,
+  "isInitialOrderRandom" : false,
   "probabilityOfReproduction": 1,
   "probabilityOfSelection": 1,
   "probabilityOfMovement": 1,

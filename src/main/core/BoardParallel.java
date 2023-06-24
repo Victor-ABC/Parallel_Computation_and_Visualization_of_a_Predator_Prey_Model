@@ -14,24 +14,48 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import main.core.config.Config;
 
+/**
+ * Die Klasse "BoardParallel" erweitert die Klasse "Board" und fügt zusätzliche Funktionalität hinzu,
+ * um parallele Verarbeitung und Thread-Synchronisation zu ermöglichen.
+ */
 public class BoardParallel extends Board {
 
     public ReentrantLock[][] lockmap;
 
     ExecutorService pool;
 
+    /**
+     * Die Klasse "BoardParallel" erweitert die Klasse "Board" und fügt zusätzliche Funktionalität hinzu,
+     * um parallele Verarbeitung und Thread-Synchronisation zu ermöglichen.
+     *
+     * Im Konstruktor der Klasse "BoardParallel" wird zunächst der Konstruktor der Basisklasse "Board"
+     * mit dem übergebenen Config-Objekt aufgerufen, um die grundlegende Initialisierung durchzuführen.
+     *
+     * Anschließend wird ein zweidimensionales Array von ReentrantLocks mit der Größe des Spielfelds
+     * (config.width * config.height) erstellt. Dabei wird für jedes Feld im Array ein ReentrantLock-Objekt
+     * erzeugt und in das entsprechende Feld eingefügt.
+     * Dieses Array dient zur Synchronisation der Threads während der parallelen Verarbeitung.
+     *
+     * Des Weiteren wird ein ExecutorService "pool" erstellt, der für die Verwaltung der Threads verwendet wird.
+     * Der ExecutorService wird mit einer festen Anzahl von Threads initialisiert,
+     * die in der Konfiguration (config.numberOfThreads) angegeben ist.
+     *
+     * Der Konstruktor der Klasse "BoardParallel" bereitet also die erforderlichen Datenstrukturen für
+     * die parallele Verarbeitung vor, indem er das Lock-Array erstellt und den ExecutorService initialisiert.
+     *
+     * Durch die Verwendung von ReentrantLocks und dem ExecutorService ermöglicht die Klasse "BoardParallel"
+     * die gleichzeitige Ausführung von Aktionen auf dem Spielfeld durch mehrere Threads und gewährleistet
+     * die erforderliche Synchronisation für den Zugriff auf die Spielfeldressourcen.
+     * @param config Konfiguration
+     */
     public BoardParallel(Config config) {
         super(config);
-
         this.lockmap = new ReentrantLock[config.width][config.height];
-
         for (int row = 0; row < config.width; row++) {
             for (int col = 0; col < config.height; col++) {
                     this.lockmap[row][col] = new ReentrantLock();
             }
         }
-
-
         pool = Executors.newFixedThreadPool(this.config.numberOfThreads);
     }
 
@@ -51,7 +75,6 @@ public class BoardParallel extends Board {
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
         for (int i = 0; i < this.config.maxIterations; i++) {
             Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
-
                 @Override
                 public Boolean call() throws Exception {
                     execute(callback);
