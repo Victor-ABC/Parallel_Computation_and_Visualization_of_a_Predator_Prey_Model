@@ -31,12 +31,7 @@ public class Util {
                 printWriter.print("time");//Always: Time
                 printWriter.print(",");
                 // Write column headers
-                for (int i = 0; i < headers.size(); i++) {
-                    printWriter.print(headers.get(i));
-                    if (i != headers.size() - 1) {
-                        printWriter.print(",");
-                    }
-                }
+                writeData(headers, printWriter);
                 printWriter.println();
 
                 printWriter.close();
@@ -65,19 +60,23 @@ public class Util {
         try {
             FileWriter fileWriter = new FileWriter(folderPath + fileName, true);
             PrintWriter printWriter = new PrintWriter(fileWriter);
+            writeData(data, printWriter);
 
-            // Write data rows
-            for (int i = 0; i < data.size(); i++) {
-                printWriter.print(data.get(i));
-                if (i != data.size() - 1) {
-                    printWriter.print(",");
-                }
-            }
             printWriter.println();
             printWriter.close();
             System.out.println("CSV file created successfully.");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void writeData(List<String> data, PrintWriter printWriter) {
+        // Write data rows
+        for (int i = 0; i < data.size(); i++) {
+            printWriter.print(data.get(i));
+            if (i != data.size() - 1) {
+                printWriter.print(",");
+            }
         }
     }
 
