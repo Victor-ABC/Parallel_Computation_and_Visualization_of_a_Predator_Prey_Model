@@ -1,2 +1,12 @@
 time,mode,numberOfThreads,width,height,maxIterations,filledFieldsInPercent
 27132,parallel_without_zones,4,1001,1001,51,80
+40602,parallel_with_zones,4,1001,1001,51,80
+3556,parallel_with_zones,20,200,200,100,80
+3645,parallel_with_zones,20,200,200,100,80
+1725,parallel_without_zones,20,200,200,100,80
+3254,parallel_with_zones,20,200,200,100,80
+3086,parallel_with_zones,20,200,200,100,80
+3138,parallel_with_zones,20,200,200,100,80
+3389,parallel_with_zones,20,200,200,100,80
+630,parallel_with_zones,4,20,20,100,80
+594,parallel_with_zones,4,20,20,100,80

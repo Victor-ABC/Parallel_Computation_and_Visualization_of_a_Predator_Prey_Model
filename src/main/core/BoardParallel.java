@@ -157,6 +157,12 @@ public class BoardParallel extends Board {
         }
     }
 
+    /**
+     * Diese Methode blockiert in einer Atomaren (synchronized) Anweisung ein Feld + Nachbarfeld
+     * @param x x
+     * @param y y
+     * @param choosenDirection Nachbar
+     */
     public synchronized void getLock(int x, int y, Direction choosenDirection) {
         this.lockmap[x][y].lock();
 
@@ -167,6 +173,12 @@ public class BoardParallel extends Board {
         });
     }
 
+    /**
+     * gibt Feld + Nachbarfeld wieder frei
+     * @param x x
+     * @param y y
+     * @param choosenDirection Nachbar
+     */
     public void unlock(int x, int y, Direction choosenDirection) {
         this.lockmap[x][y].unlock();
 
