@@ -1,10 +1,7 @@
 package main.core;
 
-import static main.core.Util.getData;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SplittableRandom;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -12,10 +9,10 @@ import java.util.function.Function;
 import main.core.config.Config;
 
 /**
- * Die Klasse "BoardParallelZones" erweitert die Klasse "Board" und stellt ein Spielbrett für
+ * Die Klasse "BoardParallelZones" erweitert die Klasse "BoardParallel" und stellt ein Spielbrett für
  * parallele Berechnungen mit Zonen dar.
- * Idee: ein 20X20 Spielfeld mit 4 Threads wird in
- * 4 Zonen a 20X5 aufgeteilt.
+ * Idee: ein 20 (breite) X 20 (höhe) Spielfeld mit 4 Threads wird in
+ * 4 Zonen a 20 (breite) X 5 (höhe) aufgeteilt.
  * Im Gegensatz zu BoardParallel müssen nur dann Felder gesperrt werden, wenn sich diese in Randbereichen
  * befinden. (Hoffnung: weniger Sync-Overhead ; Problem: Prüfung, ob in Kritischer Region dauert Zeit)
  *
@@ -61,47 +58,26 @@ public class BoardParallelZones extends BoardParallel {
         //Start Time
         long startTime = System.currentTimeMillis();
         Map<Integer, Future<Boolean>> futureMap = new HashMap<>();
-        for (int i = 0; i < this.config.maxIterations; i++) {
-                Future<Boolean> future = this.pool.submit(new Callable<Boolean>() {
-                    private int iteration;
+        executeAllTasks(createTask(callback), futureMap);
+        this.waitForFinishAndPersistMetrics(futureMap, startTime);
+    }
 
-                    @Override
-                    public Boolean call() {
-                        execute();
-                        callback.apply(1);
-                        return true;
-                    }
+    private Callable<Boolean> createTask(
+            Function<Integer, Boolean> callback) {
+        return new Callable<Boolean>() {
 
-                    public Callable<Boolean> init(int iteration) {
-                        this.iteration = iteration;
-                        return this;
-                    }
+            @Override
+            public Boolean call() {
+                execute();
+                callback.apply(1);
+                return true;
+            }
 
-                }.init(i));
-                futureMap.put(i, future);
-        }
-        //Neuer Thread, der blockierend wartet, bis die anderen Threads alle die Tasks beendet haben.
-        //Grund: nimmt man den main-thread, wartet dieser blockierend und die UI wird nicht rerendert/die
-        //       Anwendung "freezed" komplett
-        Thread t = new Thread(
-                () -> {
-                    for (Entry<Integer, Future<Boolean>> entry : futureMap.entrySet()) {
-                        try {
-                            entry.getValue().get(); //Wichtig! Hier wird blockierend gewartet,
-                            //bis der Thread fertig ist
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    //End Time
-                    long estimatedTime = System.currentTimeMillis() - startTime;
-                    Util.appendRowInCSV(config.getMetrics().getPath(),
-                            config.getMetrics().getMetricsCsvFileName(), getData(config, estimatedTime));
-                    System.out.println("Duration: " + estimatedTime + " Milliseconds");
-                    System.exit(0);
-                }
-        );
-        t.start();
+            public Callable<Boolean> init() {
+                return this;
+            }
+
+        }.init();
     }
 
     public void execute() {
@@ -131,7 +107,7 @@ public class BoardParallelZones extends BoardParallel {
         return this.executeActionAt(x, y, choosenDirection, this::isCriticalZone);
     }
 
-    private boolean isCriticalZone(int x, int y) {
+    public boolean isCriticalZone(int x, int y) {
         var threadHeight = this.config.height / this.config.numberOfThreads;
         //Bsp. threadHeight = 5 (0 - 4)
         // x=0 ist oben in Java 2D array, der höhe 5  z.B. String[5][10]

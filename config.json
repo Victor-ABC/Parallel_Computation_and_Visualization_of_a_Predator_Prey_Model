@@ -12,10 +12,10 @@
     ]
   },
   "mode": "parallel_with_zones",
-  "numberOfThreads": 3,
+  "numberOfThreads": 2,
   "width": 1000,
   "height": 1000,
-  "maxIterations": 4,
+  "maxIterations": 100,
   "filledFieldsInPercent": 80,
   "isInitialOrderRandom" : false,
   "probabilityOfReproduction": 1,
