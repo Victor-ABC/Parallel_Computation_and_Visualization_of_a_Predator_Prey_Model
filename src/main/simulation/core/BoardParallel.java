@@ -1,6 +1,6 @@
-package main.core;
+package main.simulation.core;
 
-import static main.core.Util.getData;
+import static main.simulation.analysis.Util.getValuesOfConfigProperties;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,7 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
-import main.core.config.Config;
+import main.simulation.analysis.CsvAccess;
+import main.simulation.config.Config;
 
 public abstract class BoardParallel extends Board {
 
@@ -115,8 +116,8 @@ public abstract class BoardParallel extends Board {
                     }
                     //End Time
                     long estimatedTime = System.currentTimeMillis() - startTime;
-                    Util.appendRowInCSV(config.getMetrics().getPath(),
-                            config.getMetrics().getMetricsCsvFileName(), getData(config, estimatedTime));
+                    CsvAccess.appendRowInCSV(config.getMetrics().getPath(),
+                            config.getMetrics().getMetricsCsvFileName(), getValuesOfConfigProperties(config, estimatedTime));
                     System.out.println("Duration: " + estimatedTime + " Milliseconds");
                     System.exit(0);
                 }

@@ -1,4 +1,4 @@
-package main.core.config;
+package main.simulation.config;
 
 import java.util.HashSet;
 

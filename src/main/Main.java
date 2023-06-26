@@ -7,11 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import main.Layout.Controller;
-import main.core.Board;
-import main.core.BoardParallelFull;
-import main.core.BoardParallelZones;
-import main.core.config.Config;
+import main.visualization.VisualisationController;
+import main.simulation.core.Board;
+import main.simulation.core.BoardParallelFull;
+import main.simulation.core.BoardParallelZones;
+import main.simulation.config.Config;
 
 
 public class Main extends Application {
@@ -28,16 +28,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Board board = getBoard();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Layout/view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("visualization/view.fxml"));
         Parent root = loader.load();
 
-        Controller myController = loader.getController();
+        VisualisationController myVisualisationController = loader.getController();
         primaryStage.setTitle("PVR");
         primaryStage.setScene(new Scene(root, 1600, 900));
         primaryStage.setMinWidth(820);
         primaryStage.setMinHeight(750);
         primaryStage.show();
-        myController.printGame(config, board);
+        myVisualisationController.printGame(config, board);
     }
 
     private Board getBoard() {

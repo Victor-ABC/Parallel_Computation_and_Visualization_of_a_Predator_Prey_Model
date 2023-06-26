@@ -13,7 +13,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.control.ScrollPane?>
-<BorderPane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="800.0" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Layout.Controller">
+<BorderPane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="800.0" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.visualization.VisualisationController">
     <top>
         <HBox BorderPane.alignment="CENTER">
             <children>

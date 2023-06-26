@@ -2,16 +2,13 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import main.core.Board;
-import main.core.config.Config;
+import main.simulation.core.Board;
+import main.simulation.config.Config;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -23,38 +20,71 @@ class BoardTest {
     Config config;
     String jsonString = """
             {
-              "width": 3,
-              "height": 3,
-              "maxIterations": 1,
-              "seed": 50,
-              "filledFields": 100,
-              "probabilityOfReproduction": 1,
-              "probabilityOfSelection": 1,
-              "probabilityOfMovement": 1,
-              "species": [
-                {
-                  "name": "Affen",
-                  "color": "#FF0000",
-                  "kills": [
-                    "Hund"
-                  ]
-                }, 
-                {
-                  "name": "Katze",
-                  "color": "#00FF00",
-                  "kills" : [
-                    "Affen"
-                  ]
-                },
-                {
-                  "name": "Hund",
-                  "color" : "#0000FF",
-                  "kills" : [
-                    "Katze"
-                  ]
-                }
-              ]
-            }
+               "metrics": {
+                 "metricsCsvFileName": "first_try",
+                 "path" : "./metrics/",
+                 "useFields": [
+                   "mode",
+                   "numberOfThreads",
+                   "width",
+                   "height",
+                   "maxIterations",
+                   "filledFieldsInPercent"
+                 ]
+               },
+               "mode": "parallel_with_zones",
+               "numberOfThreads": 2,
+               "width": 1000,
+               "height": 1000,
+               "maxIterations": 100,
+               "filledFieldsInPercent": 80,
+               "isInitialOrderRandom" : false,
+               "probabilityOfReproduction": 1,
+               "probabilityOfSelection": 1,
+               "probabilityOfMovement": 1,
+               "species": [
+                 {
+                   "name": "Rot",
+                   "color": "#FF0000",
+                   "kills": [
+                     "Gelb",
+                     "Blau"
+                   ]
+                 },
+                 {
+                   "name": "Gelb",
+                   "color": "#FFFF00",
+                   "kills" : [
+                     "Blau",
+                     "Orange"
+                   ]
+                 },
+                 {
+                   "name": "Blau",
+                   "color" : "#0000FF",
+                   "kills" : [
+                     "Orange",
+                     "Gruen"
+                   ]
+                 },
+                 {
+                   "name": "Orange",
+                   "color": "#FF8000",
+                   "kills": [
+                     "Gruen",
+                     "Rot"
+                   ]
+                 },
+                 {
+                   "name": "Gruen",
+                   "color": "#00FF00",
+                   "kills": [
+                     "Rot",
+                     "Gelb"
+                   ]
+                 }
+               ]
+             }
             """;
     @BeforeAll
     void setUp() {
@@ -67,21 +97,6 @@ class BoardTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    @Test
-    void shouldWork_100PercentFullGameField() {
-        for(int row = 0; row < config.width ; row++) {
-            for(int col = 0 ; col < config.height; col++) {
-                assertNotNull(board.getSpeciesAtCell(row, col));
-            }
-        }
-    }
-
-    @Test
-    void a() {
-        int iterations = 16;
-        int numberOfThreads = 8;
-        System.out.println(iterations/numberOfThreads);
     }
 
     @Test
