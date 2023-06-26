@@ -1,4 +1,4 @@
-package main.core;
+package main.simulation.core;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
-import main.core.config.Config;
+import main.simulation.analysis.CsvAccess;
+import main.simulation.config.Config;
 
 /**
  * Die Klasse "BoardParallel" erweitert die Klasse "Board" und fügt zusätzliche Funktionalität hinzu,
@@ -43,7 +44,7 @@ public class BoardParallelFull extends BoardParallel {
      */
     @Override
     public void run(Function<Integer, Boolean> callback) {
-        Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+        CsvAccess.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
                 config.getMetrics().getUseFields());
         //Start Time
         long startTime = System.currentTimeMillis();

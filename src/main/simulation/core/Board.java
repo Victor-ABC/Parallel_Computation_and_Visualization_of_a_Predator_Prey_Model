@@ -1,6 +1,6 @@
-package main.core;
+package main.simulation.core;
 
-import static main.core.Util.getData;
+import static main.simulation.analysis.Util.getValuesOfConfigProperties;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,8 +10,9 @@ import java.util.SplittableRandom;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import main.core.config.Config;
-import main.core.config.Species;
+import main.simulation.analysis.CsvAccess;
+import main.simulation.config.Config;
+import main.simulation.config.Species;
 
 public class Board {
 
@@ -142,15 +143,15 @@ public class Board {
      */
     public void run(Function<Integer, Boolean> callback) {
         new Thread(() -> {
-            Util.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+            CsvAccess.createCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
                     config.getMetrics().getUseFields());
             //Start Time
             long startTime = System.currentTimeMillis();
             execute(callback);
             //End Time
             long estimatedTime = System.currentTimeMillis() - startTime;
-            Util.appendRowInCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
-                    getData(config, estimatedTime));
+            CsvAccess.appendRowInCSV(config.getMetrics().getPath(), config.getMetrics().getMetricsCsvFileName(),
+                    getValuesOfConfigProperties(config, estimatedTime));
             System.out.println("Duration: " + estimatedTime + " Milliseconds");
             System.exit(0);
         }).start();

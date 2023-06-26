@@ -1,7 +1,6 @@
-package main.Layout;
+package main.visualization;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.InvalidationListener;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.*;
@@ -10,17 +9,17 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Label;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
-import main.core.Board;
-import main.core.config.Config;
+import main.simulation.core.Board;
+import main.simulation.config.Config;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import main.core.config.Species;
+import main.simulation.config.Species;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Controller implements Initializable {
+public class VisualisationController implements Initializable {
 
     public NumberAxis xAxis;
     public NumberAxis yAxis;

@@ -1,4 +1,4 @@
-package main.core;
+package main.simulation.core;
 
 import java.util.*;
 
